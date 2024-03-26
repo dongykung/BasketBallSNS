@@ -1,0 +1,67 @@
+<resources>
+    <string name="app_name">BasketballSNS</string>
+    <string name="google">Google Button</string>
+    <string name="googleLogin">Continue with Google</string>
+    <string name="cancel">취소</string>
+    <string name="back">뒤로가기</string>
+    <string name="market">플리마켓</string>
+
+    <string name="settingCancel">진행한 작업은 저장되지 않습니다.</string>
+    <string name="settingCancel2">정말 종료하시겠습니까?</string>
+    <string name="inputNickname">사용자 닉네임을\n 입력해주세요</string>
+    <string name="nickName">닉네임</string>
+    <string name="explainNickname">앱 내에서 사용할 닉네임을 입력해주세요.</string>
+    <string name="maxNickname">%d/20</string>
+    <string name="next">다음</string>
+    <string name="previous">이전</string>
+    <string name="explainprofile">프로필 사진을 설정해주세요\n</string>
+    <string name="profileImage">프로필 사진</string>
+    <string name="changeImage">이미지 변경</string>
+    <string name="PG">포인트 가드</string>
+    <string name="SG">슈팅 가드</string>
+    <string name="SF">스몰 포워드</string>
+    <string name="PF">파워 포워드</string>
+    <string name="CC">센터</string>
+    <string name="userposition">가능한 포지션을 모두 골라주세요.</string>
+    <string name="userplaystyle">플레이 스타일을 모두 골라주세요.</string>
+    <string name="duplicationNick">이미 존재하는 닉네임 입니다.</string>
+    <string name="check">체크</string>
+    <string name="userskill">숙련도를 골라주세요</string>
+    <string name="grow">뉴비</string>
+    <string name="basic">초보자</string>
+    <string name="middle">중급자</string>
+    <string name="master">고급자</string>
+
+
+    <string name="write">글쓰기</string>
+    <string name="cell">물건 팔기</string>
+
+    <string name="cancelcell">물건 팔기를 종료하시겠습니까?</string>
+
+
+    <string name="leading">리딩</string>
+    <string name="passing">패싱</string>
+    <string name="funny">즐농</string>
+    <string name="middleshooting">미들 슛</string>
+    <string name="pattern">패턴</string>
+    <string name="farshooting">3점 슛</string>
+    <string name="breakthrough">돌파</string>
+    <string name="dribble">드리블</string>
+    <string name="defense">수비</string>
+    <string name="rebound">리바운드</string>
+    <string name="undergoal">골 밑</string>
+    <string name="screen">스크린</string>
+    <string name="postup">포스트업</string>
+    <string name="speed">속공</string>
+
+    <string name="failedsetting">설정에 실패하였습니다</string>
+
+
+
+
+
+
+
+
+
+</resources>
