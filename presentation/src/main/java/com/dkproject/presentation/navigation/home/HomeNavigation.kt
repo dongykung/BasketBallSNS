@@ -1,6 +1,9 @@
 package com.dkproject.presentation.navigation.home
 
+import android.Manifest
 import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -31,9 +34,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.dkproject.presentation.ui.activity.HomeActivity
 import com.dkproject.presentation.ui.activity.WriteShopActivity
 import com.dkproject.presentation.ui.component.HomeBottomNavigationBar
+import com.dkproject.presentation.ui.component.showToastMessage
 import com.dkproject.presentation.ui.screen.home.chat.ChatScreen
 import com.dkproject.presentation.ui.screen.home.club.ClubScreen
 import com.dkproject.presentation.ui.screen.home.home.HomeScreen
@@ -70,6 +73,21 @@ fun HomeNavigationScreen(
     padding: PaddingValues
 ) {
     val context = LocalContext.current
+    val permissionLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestMultiplePermissions()) {permissions->
+           when{
+               permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION,false)->{
+                   context.startActivity(Intent(context,WriteShopActivity::class.java))
+               }
+               permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION,false)->{
+                   context.startActivity(Intent(context,WriteShopActivity::class.java))
+               }
+               else->{
+                   showToastMessage(context,"위치 권한을 허용해주세요")
+               }
+           }
+        }
     NavHost(
         modifier = Modifier.padding(padding),
         navController = navController,
@@ -86,7 +104,12 @@ fun HomeNavigationScreen(
         }
         composable(route = HomeRoute.SHOP.route) {
             ShopScreen(onWriteClick = {
-                context.startActivity(Intent(context, WriteShopActivity::class.java))
+                permissionLauncher.launch(
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    )
+                )
             })
         }
         composable(route = HomeRoute.SETTING.route) {

@@ -54,44 +54,10 @@ fun NicknameScreen(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Text(
-            modifier = Modifier.padding(12.dp),
-            text = stringResource(id = R.string.inputNickname),
-            style = MaterialTheme.typography.headlineMedium
-        )
-
-        Spacer(modifier = Modifier.height(100.dp))
-        InputField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            value = state.nickname,
-            labelId = "닉네임",
-            keyboardType = KeyboardType.Text,
-            imeAction = ImeAction.Done,
-            onValueChange = {
-                if (it.length <= 20)
-                    viewModel.updateNickname(it)
-            }
-        )
-        Divider(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp)
-        )
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp)
-        ) {
-            Text(
-                text = stringResource(id = R.string.explainNickname),
-                color = Color.LightGray
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Text(text = stringResource(id = R.string.maxNickname, state.nickname.length))
-        }
+        //EditNickNameSection
+        NicknameSection(state.nickname, onNickNameChange = {
+            viewModel.updateNickname(it)
+        })
         Spacer(modifier = Modifier.weight(1f))
 
         Button(
@@ -110,6 +76,49 @@ fun NicknameScreen(
     }
 }
 
+@Composable
+fun NicknameSection(
+    text:String,
+    onNickNameChange:(String)->Unit
+){
+    Text(
+        modifier = Modifier.padding(12.dp),
+        text = stringResource(id = R.string.inputNickname),
+        style = MaterialTheme.typography.headlineMedium
+    )
+
+    Spacer(modifier = Modifier.height(100.dp))
+    InputField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        value = text,
+        labelId = "닉네임",
+        keyboardType = KeyboardType.Text,
+        imeAction = ImeAction.Done,
+        onValueChange = {
+            if (it.length <= 20)
+                onNickNameChange(it)
+        }
+    )
+    Divider(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp)
+    )
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(12.dp)
+    ) {
+        Text(
+            text = stringResource(id = R.string.explainNickname),
+            color = Color.LightGray
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        Text(text = stringResource(id = R.string.maxNickname, text.length))
+    }
+}
 
 @Preview(showBackground = true)
 @Composable

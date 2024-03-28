@@ -37,7 +37,7 @@ fun HomeTopAppBar(
     title: String,
     onBack: Boolean = false, // 뒤로가기 버튼으 여부
     onBackClick: () -> Unit = {}, //뒤로가기 버튼이 클릭되었을 때
-    actiontitle:String="",
+    actiontitle: String = "",
     showAction: Boolean = false,//검색 버튼을 보여줄 것인가?
     actionClick: () -> Unit = {}, //검색 버튼클릭되었을 때
     scrollBehavior: TopAppBarScrollBehavior? = null,
@@ -60,10 +60,10 @@ fun HomeTopAppBar(
             }
         },
         actions = {
-            if(showAction)
-            TextButton(onClick = actionClick) {
-                Text(text = actiontitle)
-            }
+            if (showAction)
+                TextButton(onClick = actionClick) {
+                    Text(text = actiontitle)
+                }
         }
     )
 }

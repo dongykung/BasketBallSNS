@@ -36,7 +36,6 @@ fun PlayPositionScreen(
 ) {
     val state = viewModel.state.collectAsState().value
 
-
     Column(
         modifier = Modifier
             .fillMaxSize()

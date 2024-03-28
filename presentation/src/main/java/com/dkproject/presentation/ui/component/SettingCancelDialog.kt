@@ -30,7 +30,6 @@ import com.dkproject.presentation.R
 @Composable
 fun SettingCancelDialog(
     visible:Boolean,
-    ButtonSection:Boolean=true,
     onCancelClick:()->Unit,
     onDismissRequest :()->Unit
 ){
@@ -56,7 +55,7 @@ fun SettingCancelDialog(
                             Text(text = "취소")
                         }
                         TextButton(modifier= Modifier.weight(1f),onClick = { onCancelClick()}) {
-                            Text(text = "종료")
+                            Text(text = "확인")
                         }
                     }
                 }

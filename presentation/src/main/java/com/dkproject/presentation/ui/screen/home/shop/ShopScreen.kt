@@ -1,5 +1,6 @@
 package com.dkproject.presentation.ui.screen.home.shop
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,6 +21,7 @@ import com.dkproject.presentation.ui.component.HomeTopAppBar
 fun ShopScreen(
     onWriteClick:()->Unit
 ) {
+    Log.d("zz", "ShopScreen: ")
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection), topBar = {
         HomeTopAppBar(

@@ -32,6 +32,15 @@
     <string name="middle">중급자</string>
     <string name="master">고급자</string>
 
+    <string name="title">제목</string>
+    <string name="price">가격</string>
+    <string name="sale">판매하기</string>
+
+    <string name="content">내기</string>
+    <string name="address">장소</string>
+
+    <string name="putprice">가격을 입력해주세요</string>
+
 
     <string name="write">글쓰기</string>
     <string name="cell">물건 팔기</string>
@@ -57,7 +66,12 @@
     <string name="failedsetting">설정에 실패하였습니다</string>
 
 
-
+    <string name="basketball">농구공</string>
+    <string name="safearticle">보호대</string>
+    <string name="shoes">농구화</string>
+    <string name="bag">가방</string>
+    <string name="socks">양말</string>
+    <string name="cloth">의류</string>
 
 
 
