@@ -15,7 +15,7 @@ class WriteShopActivity:ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent{
             BasketballSNSTheme {
-                WriteShopNavigation(onBackClick = {finish()})
+                WriteShopNavigation(onBackClick = {finish()}, onLoad = {finish()})
             }
         }
     }

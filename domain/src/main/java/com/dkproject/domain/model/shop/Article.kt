@@ -1,10 +1,12 @@
 package com.dkproject.domain.model.shop
 
-import com.sun.jndi.toolkit.url.Uri
 
-data class Article(
+
+data class Articles(
+    val writerUid:String,
+    val uid:String,
     val name:String,
-    val imageList:List<Uri>,
+    val imageList:List<String>,
     val price:String,
     val type:String,
     val content:String,
@@ -12,6 +14,7 @@ data class Article(
     val lat:Double,
     val lng:Double,
 )
+
 
 
 

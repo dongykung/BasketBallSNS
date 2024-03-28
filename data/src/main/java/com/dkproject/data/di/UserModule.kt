@@ -2,6 +2,7 @@ package com.dkproject.data.di
 
 import com.dkproject.data.usecase.location.GetLastLocationUseCaseImpl
 import com.dkproject.data.usecase.login.CheckFirstUseCaseImpl
+import com.dkproject.data.usecase.shop.UploadArticleUseCaseImpl
 import com.dkproject.data.usecase.token.ClearTokenUseCaseImpl
 import com.dkproject.data.usecase.token.GetTokenUseCaseImpl
 import com.dkproject.data.usecase.token.SetTokenUseCaseImpl
@@ -10,6 +11,7 @@ import com.dkproject.data.usecase.user.SetUserInfoUseCaseImpl
 import com.dkproject.data.usecase.user.UploadProfileImageUseCaseImpl
 import com.dkproject.domain.usecase.location.GetLastLocationUseCase
 import com.dkproject.domain.usecase.login.CheckFirstUseCase
+import com.dkproject.domain.usecase.shop.UploadArticleUseCase
 import com.dkproject.domain.usecase.token.ClearTokenUseCase
 import com.dkproject.domain.usecase.token.GetTokenUseCase
 import com.dkproject.domain.usecase.token.SetTokenUseCase
@@ -47,5 +49,8 @@ abstract class UserModule {
 
     @Binds
     abstract fun bindGetLastLocationUseCase(uc: GetLastLocationUseCaseImpl): GetLastLocationUseCase
+
+    @Binds
+    abstract fun bindUploadArticleUseCase(uc: UploadArticleUseCaseImpl): UploadArticleUseCase
 
 }

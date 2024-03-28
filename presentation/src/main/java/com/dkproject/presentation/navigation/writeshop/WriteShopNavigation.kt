@@ -20,7 +20,8 @@ enum class WriteShopRoute(val route: String) {
 
 @Composable
 fun WriteShopNavigation(navController: NavHostController = rememberNavController(),
-                        onBackClick:()->Unit) {
+                        onBackClick:()->Unit,
+                        onLoad:()->Unit) {
     val sharedViewModel:WriteShopViewModel = viewModel()
     NavHost(
         navController = navController,
@@ -31,7 +32,8 @@ fun WriteShopNavigation(navController: NavHostController = rememberNavController
                 setAddress = {
                              navController.navigate(route = WriteShopRoute.ADDRESS.route)
                 },
-                onBackClick = onBackClick)
+                onBackClick = onBackClick,
+                onLoad =onLoad)
         }
         composable(route=WriteShopRoute.ADDRESS.route){
             SetAddressScreen(sharedViewModel = sharedViewModel, finish = {

@@ -30,6 +30,7 @@ import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -50,12 +51,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.dkproject.presentation.R
@@ -77,11 +80,14 @@ fun WriteShopScreen(
     viewModel: WriteShopViewModel,
     setAddress: () -> Unit,
     onBackClick: () -> Unit,
+    onLoad:()->Unit,
 ) {
+    val context = LocalContext.current
     val state = viewModel.state.collectAsState().value
     val valid =
         state.name.isNotEmpty() && state.price.isNotEmpty() && state.content.isNotEmpty() && state.detailAddress.isNotEmpty()
                 && state.type.isNotEmpty() && state.imageList.isNotEmpty()
+    val loading = viewModel.loading
     val visualMediaPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(5)
     ) { uris ->
@@ -106,66 +112,71 @@ fun WriteShopScreen(
             showAction = true,
         )
     }) { innerPadding ->
-        Column(modifier = Modifier.fillMaxSize()) {
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(innerPadding)
-                    .padding(horizontal = 12.dp)
-                    .verticalScroll(rememberScrollState())
-            ) {
-                Divider()
+        Box(modifier = Modifier.fillMaxSize()) {
+            if(loading.value) CircularProgressIndicator(modifier=Modifier.align(Alignment.Center))
+            Column(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(innerPadding)
+                        .padding(horizontal = 12.dp)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    Divider()
 
-                //article Image Section
-                ImagePickerSection(
-                    selectedImageList = state.imageList,
-                    onAddImage = {
-                        visualMediaPickerLauncher.launch(
-                            PickVisualMediaRequest(
-                                ActivityResultContracts.PickVisualMedia.ImageOnly
+                    //article Image Section
+                    ImagePickerSection(
+                        selectedImageList = state.imageList,
+                        onAddImage = {
+                            visualMediaPickerLauncher.launch(
+                                PickVisualMediaRequest(
+                                    ActivityResultContracts.PickVisualMedia.ImageOnly
+                                )
                             )
-                        )
-                    },
-                    onRemoveImage = { uri ->
-                        viewModel.removeImageList(uri)
+                        },
+                        onRemoveImage = { uri ->
+                            viewModel.removeImageList(uri)
+                        })
+
+                    //ArticleType Section
+                    ArticleTypeSection(type = state.type, typeChange = { type ->
+                        viewModel.updateType(type)
                     })
 
-                //ArticleType Section
-                ArticleTypeSection(type = state.type, typeChange = { type ->
-                    viewModel.updateType(type)
-                })
+                    //TitleSection
+                    TitleNameSection(title = state.name, onTitleChange = { name ->
+                        viewModel.updateName(name)
+                    })
 
-                //TitleSection
-                TitleNameSection(title = state.name, onTitleChange = { name ->
-                    viewModel.updateName(name)
-                })
+                    //PriceSection
+                    PriceSection(
+                        price = state.price,
+                        onPriceChange = { price ->
+                            viewModel.updatePrice(price)
+                        }
+                    )
 
-                //PriceSection
-                PriceSection(
-                    price = state.price,
-                    onPriceChange = { price ->
-                        viewModel.updatePrice(price)
-                    }
-                )
+                    //explainSection
+                    ExplainSection(content = state.content, onContentChange = { content ->
+                        viewModel.updateContent(content)
+                    })
 
-                //explainSection
-                ExplainSection(content = state.content, onContentChange = { content ->
-                    viewModel.updateContent(content)
-                })
-
-                //addressSection
-                AddressSection(address = state.detailAddress, setAddress = setAddress)
+                    //addressSection
+                    AddressSection(address = state.detailAddress, setAddress = setAddress)
 
 
-                //addressSection
+                    //addressSection
 
-            }
-            Button(modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 3.dp),
-                enabled = valid,
-                onClick = { /*TODO*/ }) {
-                Text(text = stringResource(id = R.string.sale))
+                }
+                Button(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 3.dp),
+                    enabled = valid,
+                    onClick = {
+                        viewModel.uploadArticle(context, onLoad = onLoad)
+                    }) {
+                    Text(text = stringResource(id = R.string.sale))
+                }
             }
         }
     }
@@ -174,7 +185,7 @@ fun WriteShopScreen(
 
 @Composable
 private fun ImagePickerSection(
-    selectedImageList: List<Uri>,
+    selectedImageList: List<String>,
     onAddImage: () -> Unit,
     onRemoveImage: (Uri) -> Unit
 ) {
@@ -192,7 +203,7 @@ private fun ImagePickerSection(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(selectedImageList) { uri ->
-                ImageBox(imageUrl = uri, onCnacel = {
+                ImageBox(imageUrl = uri.toUri(), onCnacel = {
                     onRemoveImage(it)
                 })
             }
