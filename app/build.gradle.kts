@@ -70,7 +70,6 @@ dependencies {
     implementation(project(":data"))
 
 
-
     //hilt,dagger
     implementation("com.google.dagger:hilt-android:2.48.1")
     ksp("com.google.dagger:dagger-compiler:2.48.1") // Dagger compiler

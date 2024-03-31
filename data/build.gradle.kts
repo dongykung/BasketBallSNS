@@ -55,12 +55,20 @@ dependencies {
     //firebase firestorage
     implementation("com.google.firebase:firebase-storage")
 
+    //firebase geo
+    implementation("com.firebase:geofire-android-common:3.2.0")
+
     //datastore
     implementation("androidx.datastore:datastore-core:1.0.0")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
 //googlemapdata
     implementation("com.google.android.gms:play-services-location:21.2.0")
+
+
+    //paging3
+    implementation("androidx.paging:paging-common-ktx:3.2.1")
+    implementation("androidx.paging:paging-runtime-ktx:3.2.1")
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")

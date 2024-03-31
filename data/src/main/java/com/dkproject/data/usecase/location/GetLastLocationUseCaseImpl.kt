@@ -31,11 +31,15 @@ class GetLastLocationUseCaseImpl @Inject constructor(
             return@flow
         }
         val data = MyLocation(37.555134, 126.936893)
-         locationClient.lastLocation.addOnSuccessListener {
-            data.Lat=it.latitude
-            data.Lng=it.longitude
+
+        locationClient.lastLocation.addOnSuccessListener {
+            if(it!=null) {
+                data.Lat = it.latitude ?: 37.555134
+                data.Lng = it.longitude ?: 126.936893
+            }
         }.addOnFailureListener {
-             Log.d("GetLastLocationUseCaseImpl", it.toString())
+            data.Lat = 37.555134
+            data.Lng = 126.936893
         }.await()
         emit(data)
     }

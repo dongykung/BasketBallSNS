@@ -85,6 +85,10 @@ dependencies {
     //navigation
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
+    //firebase geo
+    implementation("com.firebase:geofire-android-common:3.2.0")
+
+
     //googlemap
     implementation("com.google.maps.android:maps-compose:4.3.3")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
@@ -92,6 +96,9 @@ dependencies {
     //googleplace
     implementation("com.google.android.libraries.places:places:3.4.0")
 
+    //paging3
+    implementation("androidx.paging:paging-compose:3.2.1")
+    
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.activity:activity-compose:1.8.2")

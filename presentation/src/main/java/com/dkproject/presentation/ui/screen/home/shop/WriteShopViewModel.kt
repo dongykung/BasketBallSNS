@@ -130,7 +130,7 @@ data class WriteState(
             uid=uid,
             name=name,
             imageList=imageList,
-            price=price,
+            price=price.toInt(),
             type=type,
             content=content,
             detailAddress=detailAddress,
