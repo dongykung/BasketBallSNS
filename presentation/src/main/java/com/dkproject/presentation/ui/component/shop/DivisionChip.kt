@@ -23,17 +23,22 @@ import com.dkproject.presentation.ui.theme.BasketballSNSTheme
 fun DivisionChip(
     modifier: Modifier=Modifier,
     value:String,
+    distance:Boolean=false,
+    arrow:Boolean=false,
     onClick:()->Unit={}
 ) {
     Surface(
-        modifier=modifier.clickable { onClick() },
+        modifier=modifier.clickable {
+            onClick() },
         shape = RoundedCornerShape(18.dp),
-        border = BorderStroke(1.dp, Color.LightGray)
+        border = BorderStroke(1.dp, Color.LightGray),
+        color = if(distance)Color.LightGray else Color.White
     ) {
         Row(modifier=Modifier.padding(8.dp),
             verticalAlignment = Alignment.CenterVertically) {
             Text(text = value)
-            Icon(imageVector = Icons.Filled.KeyboardArrowDown, contentDescription = "")
+            if(arrow)
+                Icon(imageVector = Icons.Filled.KeyboardArrowDown, contentDescription = "")
         }
     }
 }
@@ -44,6 +49,6 @@ fun DivisionChip(
 @Preview(showBackground = true)
 fun DivisionChipPreview(){
     BasketballSNSTheme {
-        DivisionChip(value = "카테고리")
+        DivisionChip(value = "카테고리",arrow=true)
     }
 }

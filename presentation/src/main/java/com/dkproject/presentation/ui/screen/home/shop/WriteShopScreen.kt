@@ -66,6 +66,11 @@ import com.dkproject.presentation.ui.component.ConfirmDialog
 import com.dkproject.presentation.ui.component.HomeTopAppBar
 import com.dkproject.presentation.ui.component.InputField
 import com.dkproject.presentation.ui.component.SettingCancelDialog
+import com.dkproject.presentation.ui.component.section.AddressSection
+import com.dkproject.presentation.ui.component.section.ExplainSection
+import com.dkproject.presentation.ui.component.section.ImagePickerSection
+import com.dkproject.presentation.ui.component.section.PriceSection
+import com.dkproject.presentation.ui.component.section.TitleNameSection
 import com.dkproject.presentation.ui.component.writeshop.ContentInputField
 import com.dkproject.presentation.ui.component.writeshop.GetImageButton
 import com.dkproject.presentation.ui.component.writeshop.ImageBox
@@ -183,133 +188,20 @@ fun WriteShopScreen(
 }
 
 
-@Composable
-private fun ImagePickerSection(
-    selectedImageList: List<String>,
-    onAddImage: () -> Unit,
-    onRemoveImage: (Uri) -> Unit
-) {
-    // 이미지 선택 및 삭제 관련 UI 구성
-    Row(
-        modifier = Modifier
-            .padding(top = 12.dp)
-            .height(100.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        //add imagebutton
-        GetImageButton(selectedImageList.size, getImageClick = onAddImage)
-        //get image
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(selectedImageList) { uri ->
-                ImageBox(imageUrl = uri.toUri(), onCnacel = {
-                    onRemoveImage(it)
-                })
-            }
-        }
-    }
-}
+
 
 @Composable
 private fun ArticleTypeSection(
     type: String,
     typeChange: (String) -> Unit
 ) {
-    articleType(selectedType = type, typeChange = typeChange)
+    val typeList = listOf<String>(
+        stringResource(id = R.string.basketball),
+        stringResource(id = R.string.safearticle),
+        stringResource(id = R.string.shoes),
+        stringResource(id = R.string.bag),
+        stringResource(id = R.string.socks),
+        stringResource(id = R.string.cloth)
+    )
+    articleType(selectedType = type, typeList = typeList, typeChange = typeChange)
 }
-
-@Composable
-private fun TitleNameSection(
-    title: String,
-    onTitleChange: (String) -> Unit
-) {
-    Text(
-        modifier = Modifier.padding(top = 6.dp, start = 3.dp),
-        text = stringResource(id = R.string.title)
-    )
-    //inputField
-    InputField(modifier = Modifier
-        .padding(horizontal = 5.dp)
-        .fillMaxSize(),
-        value = title, labelId = "",
-        keyboardType = KeyboardType.Text,
-        imeAction = ImeAction.Done,
-        onValueChange = {
-            if (it.length <= 20)
-                onTitleChange(it)
-        })
-    Text(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(end = 5.dp),
-        text = stringResource(id = R.string.maxNickname, title.length),
-        textAlign = TextAlign.End
-    )
-}
-
-@Composable
-private fun PriceSection(
-    price: String,
-    onPriceChange: (String) -> Unit
-) {
-    Text(
-        modifier = Modifier.padding(top = 12.dp, start = 3.dp),
-        text = stringResource(id = R.string.price)
-    )
-    //inputField
-    InputPriceField(
-        modifier = Modifier
-            .padding(horizontal = 5.dp)
-            .fillMaxSize(),
-        price = price,
-        labelId = stringResource(id = R.string.putprice),
-        onPriceChange = {
-            if (it.length <= 10)
-                onPriceChange(it)
-        }
-    )
-}
-
-
-@Composable
-private fun ExplainSection(
-    content: String,
-    onContentChange: (String) -> Unit
-) {
-    Text(
-        modifier = Modifier.padding(top = 12.dp, start = 3.dp, bottom = 3.dp),
-        text = stringResource(id = R.string.content)
-    )
-    ContentInputField(
-        modifier = Modifier
-            .padding(horizontal = 5.dp)
-            .fillMaxWidth()
-            .height(150.dp),
-        value = content, valueChange = onContentChange
-    )
-}
-
-@Composable
-private fun AddressSection(
-    address: String,
-    setAddress: () -> Unit
-) {
-    Text(
-        modifier = Modifier.padding(top = 12.dp, start = 3.dp, bottom = 3.dp),
-        text = stringResource(id = R.string.address)
-    )
-    InputField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 5.dp, vertical = 3.dp)
-            .clickable { setAddress() },
-        value = address,
-        labelId = "",
-        trailingIcon = true,
-        trailingIconClick = setAddress,
-        onValueChange = {},
-        enabled = false
-    )
-}
-

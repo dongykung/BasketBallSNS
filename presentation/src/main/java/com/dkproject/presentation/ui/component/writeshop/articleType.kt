@@ -21,18 +21,12 @@ import com.dkproject.presentation.R
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun articleType(
+    typeList:List<String>,
     selectedType: String,
     typeChange: (String) -> Unit
 ) {
 
-    val typeList = listOf<String>(
-        stringResource(id = R.string.basketball),
-        stringResource(id = R.string.safearticle),
-        stringResource(id = R.string.shoes),
-        stringResource(id = R.string.bag),
-        stringResource(id = R.string.socks),
-        stringResource(id = R.string.cloth)
-    )
+
     FlowRow(
         modifier = Modifier.padding(3.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp)

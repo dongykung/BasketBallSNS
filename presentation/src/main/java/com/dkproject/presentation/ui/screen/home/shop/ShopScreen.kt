@@ -1,6 +1,11 @@
 package com.dkproject.presentation.ui.screen.home.shop
 
+import android.Manifest
+import android.content.Context
+import android.content.Intent
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -39,6 +44,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -47,25 +53,27 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.dkproject.presentation.R
 import com.dkproject.presentation.model.ShopUiModel
+import com.dkproject.presentation.ui.activity.WriteShopActivity
 import com.dkproject.presentation.ui.component.HomeFloatingButton
 import com.dkproject.presentation.ui.component.HomeTopAppBar
 import com.dkproject.presentation.ui.component.shop.CustomBottomSheet
 import com.dkproject.presentation.ui.component.shop.DivisionChip
+import com.dkproject.presentation.ui.component.showToastMessage
+import com.dkproject.presentation.util.LocationPermission
+import com.dkproject.presentation.util.moveToSettingDialog
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShopScreen(
-    viewModel: ShopHomeViewModel = hiltViewModel(),
+    viewModel: ShopHomeViewModel,
     onWriteClick: () -> Unit
 ) {
 
     val state = viewModel.state.collectAsState().value
     val items: LazyPagingItems<ShopUiModel> = state.shopList.collectAsLazyPagingItems()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-    LaunchedEffect(key1 = state) {
-        Log.d("articleT", state.toString())
-    }
+
     Scaffold(modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection), topBar = {
         HomeTopAppBar(
             title = stringResource(id = R.string.market),
@@ -116,10 +124,10 @@ fun ShopListSection(
                     profileImage = this.image,
                     name = this.name,
                     address = this.detailAddress,
-                    type=this.type,
+                    type = this.type,
                     price = this.price
                 )
-                Divider(modifier=Modifier.padding(vertical = 6.dp, horizontal = 12.dp))
+                Divider(modifier = Modifier.padding(vertical = 6.dp, horizontal = 12.dp))
 
             }
         }
@@ -131,11 +139,12 @@ fun ShopListSection(
 fun DivisionSection(
     modifier: Modifier = Modifier,
     categoryText: String,
-    distance:Boolean,
-    distanceChange:(Boolean)->Unit,
+    distance: Boolean,
+    distanceChange: (Boolean) -> Unit,
     divisionChange: (Boolean) -> Unit,
     categoryChange: (String) -> Unit,
 ) {
+    val context = LocalContext.current
     var isCategoryBottomSheetVisible by remember { mutableStateOf(false) }
     val categories = listOf("모두보기", "농구화", "농구공", "보호대", "가방", "양말", "의류")
     var isPriceOrderBottomSheetVisible by remember { mutableStateOf(false) }
@@ -145,19 +154,52 @@ fun DivisionSection(
     var pricetext by remember {
         mutableStateOf("가격")
     }
+    var permissionDialog by remember { mutableStateOf(false) }
+    if(permissionDialog)
+        moveToSettingDialog(context,permissionDialog, changeOpenDialog = {
+            permissionDialog=it
+        })
+    val permissionLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+            when {
+                permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
+                    distanceChange(!distance)
+                }
+                permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
+                    distanceChange(!distance)
+                }
+                else -> {
+                     permissionDialog = true
+                }
+            }
+        }
     Row(
         modifier = modifier
             .horizontalScroll(rememberScrollState()),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        DivisionChip(modifier = Modifier.padding(start = 12.dp), value = categoryText, onClick = {
-            isCategoryBottomSheetVisible = true
-        })
-        DivisionChip(value = pricetext, onClick = {
+        DivisionChip(
+            modifier = Modifier.padding(start = 12.dp),
+            arrow = true,
+            value = categoryText,
+            onClick = {
+                isCategoryBottomSheetVisible = true
+            })
+        DivisionChip(value = pricetext, arrow = true, onClick = {
             isPriceOrderBottomSheetVisible = true
         })
-        FilterChip(selected = distance, onClick = { distanceChange(!distance) }, label = { Text(text = "내 주변 보기") })
+        DivisionChip(value = "내 주변 보기", arrow = false, distance = distance, onClick = {
+            permissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        }
+        )
 
         if (isCategoryBottomSheetVisible) {
             CustomBottomSheet(showVisible = isCategoryBottomSheetVisible,
@@ -173,11 +215,11 @@ fun DivisionSection(
                 valueList = prices,
                 onValueChange = { value ->
                     if (value.equals("높은 순")) {
-                        isPriceOrderBottomSheetVisible=false
+                        isPriceOrderBottomSheetVisible = false
                         pricetext = value
                         divisionChange(false)
                     } else {
-                        isPriceOrderBottomSheetVisible=false
+                        isPriceOrderBottomSheetVisible = false
                         pricetext = value
                         divisionChange(true)
                     }
@@ -187,3 +229,4 @@ fun DivisionSection(
 
     }
 }
+

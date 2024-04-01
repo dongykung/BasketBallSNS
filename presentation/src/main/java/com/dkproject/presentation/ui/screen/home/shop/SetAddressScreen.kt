@@ -72,7 +72,9 @@ import kotlin.math.log
 @Composable
 fun SetAddressScreen(
     viewModel: GoogleMapCoordinateViewModel = hiltViewModel(),
-    sharedViewModel: WriteShopViewModel,
+    updatelat: (Double) -> Unit,
+    updatelng: (Double) -> Unit,
+    updateaddress: (String) -> Unit,
     finish: () -> Unit
 ) {
     val context = LocalContext.current
@@ -153,7 +155,9 @@ fun SetAddressScreen(
                         context,
                         cameraPositionState.position.target.latitude,
                         cameraPositionState.position.target.longitude,
-                        sharedViewModel,
+                        updatelat = updatelat,
+                        updatelng=updatelng,
+                        updateaddress=updateaddress,
                         finish = finish
                     )
                 }) {
@@ -223,35 +227,38 @@ fun SearchResultItem(
 }
 
 private fun getAddress(context: Context, lat: Double, lng: Double,
-                       sharedViewModel: WriteShopViewModel,finish:()->Unit) {
+                       updatelat:(Double)->Unit,
+                       updatelng:(Double)->Unit,
+                       updateaddress:(String)->Unit,
+                      finish:()->Unit) {
     val geocoder = Geocoder(context, Locale.KOREA)
 
     if (Build.VERSION.SDK_INT < 33) {
         val address = geocoder.getFromLocation(lat, lng, 1)?.let {
-            sharedViewModel.updatelatitude(it[0].latitude)
-            sharedViewModel.updatelongitude(it[0].longitude)
+//            sharedViewModel.updatelatitude(it[0].latitude)
+//            sharedViewModel.updatelongitude(it[0].longitude)
+            updatelat(it[0].latitude)
+            updatelng(it[0].longitude)
             var value = it[0].getAddressLine(0)
             if(value.contains("대한민국"))
                 value = value.replace("대한민국","").trim()
-            sharedViewModel.updateDetailAddress(value)
+//            sharedViewModel.updateDetailAddress(value)
+            updateaddress(value)
         }
         finish()
-        Log.d("myaddress_sdk<33", address.toString())
     } else {
         val geocoderListener = @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         object : Geocoder.GeocodeListener {
             override fun onGeocode(addresses: MutableList<Address>) {
                 var value = addresses[0].getAddressLine(0)
-                Log.d("fullname", addresses.toString())
-
-                Log.d("myaddress", value.toString())
                 if(value.contains("대한민국"))
                     value = value.replace("대한민국", "").trim()
-                sharedViewModel.updatelatitude(addresses[0].latitude)
-                sharedViewModel.updatelongitude(addresses[0].longitude)
-                sharedViewModel.updateDetailAddress(value)
-                Log.d("myaddress", value.toString())
-
+//                sharedViewModel.updatelatitude(addresses[0].latitude)
+//                sharedViewModel.updatelongitude(addresses[0].longitude)
+                updatelat(addresses[0].latitude)
+                updatelng(addresses[0].longitude)
+                updateaddress(value)
+//                sharedViewModel.updateDetailAddress(value)
             }
         }
         geocoder.getFromLocation(lat, lng, 1, geocoderListener)

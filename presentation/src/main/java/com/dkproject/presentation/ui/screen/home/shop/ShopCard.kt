@@ -23,12 +23,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.dkproject.presentation.ui.theme.BasketballSNSTheme
+import java.text.DecimalFormat
+import java.text.NumberFormat
+import java.util.Locale
 
 
 @Composable
@@ -62,7 +66,7 @@ fun ShopCard(
                         .clip(RoundedCornerShape(12.dp))
                 )
                 Column(
-                    modifier = Modifier.padding(start = 8.dp),
+                    modifier = Modifier.padding(start = 10.dp).weight(7f),
                     verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Text(
@@ -70,6 +74,15 @@ fun ShopCard(
                         style = TextStyle(fontSize = 18.sp),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
+                    )
+                    Text(
+                        text = formatNumber(price.toLong())+"원",
+                        style = TextStyle(
+                            color = Color.Blue,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp
+                        ),
+                        textAlign = TextAlign.End
                     )
                     Text(
                         text = address,
@@ -86,24 +99,24 @@ fun ShopCard(
                     ) {
                         Text(
                             modifier = Modifier.padding(6.dp),
-                            text = type
+                            text = type,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
-                    Text(
-                        text = price.toString(),
-                        style = TextStyle(
-                            color = Color.Blue,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp
-                        )
-                    )
+
                 }
             }
         }
     }
 }
 
+@Composable
+fun formatNumber(number: Long): String {
+    val numberFormat = NumberFormat.getInstance(Locale.getDefault())
 
+    return numberFormat.format(number)
+}
 @Composable
 @Preview(showBackground = true)
 fun ShopCardPreview() {

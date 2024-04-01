@@ -19,27 +19,39 @@ enum class WriteShopRoute(val route: String) {
 }
 
 @Composable
-fun WriteShopNavigation(navController: NavHostController = rememberNavController(),
-                        onBackClick:()->Unit,
-                        onLoad:()->Unit) {
-    val sharedViewModel:WriteShopViewModel = viewModel()
+fun WriteShopNavigation(
+    navController: NavHostController = rememberNavController(),
+    onBackClick: () -> Unit,
+    onLoad: () -> Unit
+) {
+    val sharedViewModel: WriteShopViewModel = viewModel()
     NavHost(
         navController = navController,
         startDestination = WriteShopRoute.WRITE.route
     ) {
-        composable(route=WriteShopRoute.WRITE.route){
-            WriteShopScreen(viewModel = sharedViewModel,
+        composable(route = WriteShopRoute.WRITE.route) {
+            WriteShopScreen(
+                viewModel = sharedViewModel,
                 setAddress = {
-                             navController.navigate(route = WriteShopRoute.ADDRESS.route)
+                    navController.navigate(route = WriteShopRoute.ADDRESS.route)
                 },
                 onBackClick = onBackClick,
-                onLoad =onLoad)
+                onLoad = onLoad
+            )
         }
-        composable(route=WriteShopRoute.ADDRESS.route){
-            SetAddressScreen(sharedViewModel = sharedViewModel, finish = {
-                Log.d("finish","fiinish")
-                navController.navigate(WriteShopRoute.WRITE.route)
-            })
+        composable(route = WriteShopRoute.ADDRESS.route) {
+            SetAddressScreen(updatelat = {
+                sharedViewModel.updatelatitude(it)
+                },
+                updatelng = {
+                    sharedViewModel.updatelongitude(it)
+                },
+                updateaddress = {
+                    sharedViewModel.updateDetailAddress(it)
+                }, finish = {
+                    Log.d("finish", "fiinish")
+                    navController.navigate(WriteShopRoute.WRITE.route)
+                })
         }
     }
 }

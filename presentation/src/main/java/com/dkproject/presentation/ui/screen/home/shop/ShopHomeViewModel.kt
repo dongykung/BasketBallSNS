@@ -82,6 +82,11 @@ class ShopHomeViewModel @Inject constructor(
         }
     }
 
+    fun updateload(){
+        if(state.value.distanceOrder){
+            nearyDataload()
+        }else load()
+    }
     fun categoryChange(category: String) {
         _state.update { it.copy(type = category) }
         if (state.value.distanceOrder) {
