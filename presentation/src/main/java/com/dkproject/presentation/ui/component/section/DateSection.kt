@@ -54,7 +54,9 @@ fun DateSection(
     date: Long,
     hour: String,
     dateChange: (Long) -> Unit,
-    hourChange:(String)->Unit,
+    timeChange:(String)->Unit,
+    hourChange:(Int)->Unit,
+    minChange:(Int)->Unit,
 ) {
     val datePickerState = rememberDatePickerState()
     val timePickerState = rememberTimePickerState(
@@ -117,9 +119,13 @@ fun DateSection(
                             Text(text = "취소")
                         }
                         TextButton(onClick = {
-                            val time ="${timePickerState.hour}:${timePickerState.minute}"
-                            hourChange(time)
+                            val time ="${timePickerState.hour}시${timePickerState.minute}분"
+                            hourChange(timePickerState.hour)
+                            minChange(timePickerState.minute)
+                            timeChange(time)
                             showTimeDialog.value = false
+
+
                         }) {
                             Text(text = "확인")
                         }

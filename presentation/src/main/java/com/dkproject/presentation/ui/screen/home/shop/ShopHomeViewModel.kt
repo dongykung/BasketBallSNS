@@ -54,7 +54,6 @@ class ShopHomeViewModel @Inject constructor(
                         article.toUiModel()
                     }
                 }
-
                 _state.update { it.copy(shopList = shopModelFlow) }
             }.onFailure {
                 Log.d("getArticleFail", it.toString())

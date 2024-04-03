@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.InputChipDefaults
@@ -127,7 +128,7 @@ fun ShopListSection(
                     type = this.type,
                     price = this.price
                 )
-                Divider(modifier = Modifier.padding(vertical = 6.dp, horizontal = 12.dp))
+                HorizontalDivider(modifier = Modifier.padding(vertical = 6.dp, horizontal = 12.dp))
 
             }
         }
@@ -149,8 +150,7 @@ fun DivisionSection(
     val categories = listOf("모두보기", "농구화", "농구공", "보호대", "가방", "양말", "의류")
     var isPriceOrderBottomSheetVisible by remember { mutableStateOf(false) }
     val prices = listOf("높은 순", "낮은 순")
-    var isDistanceOrderBottomSheetVisible by remember { mutableStateOf(false) }
-    val distances = listOf("가까운 순", "먼 순")
+
     var pricetext by remember {
         mutableStateOf("가격")
     }

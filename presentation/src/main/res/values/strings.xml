@@ -48,7 +48,10 @@
     <string name="address">장소</string>
 
     <string name="putprice">가격을 입력해주세요</string>
+    <string name="currentPerson">모집 인원 %d</string>
 
+    <string name="dday">D - %d</string>
+    <string name="guestsize">%d/%d</string>
 
     <string name="write">글쓰기</string>
     <string name="cell">물건 팔기</string>

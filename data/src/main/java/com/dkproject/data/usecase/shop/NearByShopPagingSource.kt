@@ -83,7 +83,6 @@ class NearByShopPagingSource @Inject constructor(
                 nextKey = null
             )
         }catch (e:Exception){
-            Log.d("FailLoad", e.message.toString())
             return LoadResult.Error(e)
         }
     }

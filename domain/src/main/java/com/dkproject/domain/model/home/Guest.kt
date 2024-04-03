@@ -9,10 +9,13 @@ data class Guest(
     val content:String,
     val lat:Double,
     val lng:Double,
+    val guestsUid:List<String>,
     val detailAddress:String,
-    val date:Long=System.currentTimeMillis(),
-    val time:String
+    val detaildate:Long,
+    val daydate:Long,
 )
+
+
 
 
 

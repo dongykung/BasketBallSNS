@@ -7,7 +7,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class UploadGuestUseCase(private val guestRepository:GuestRepository) {
-    suspend operator fun invoke(guest: Guest): Flow<Resource<Boolean>> = flow{
-        guestRepository.uploadGuest(guest)
+    suspend operator fun invoke(guest: Guest): Flow<Resource<Boolean>> = flow {
+        try {
+            emit(Resource.Loading(true))
+            emit(guestRepository.uploadGuest(guest))
+        }catch (e:Exception){
+            emit(Resource.Error(e.message.toString()))
+        }
     }
 }

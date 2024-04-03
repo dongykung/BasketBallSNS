@@ -1,8 +1,12 @@
 package com.dkproject.domain.repository
 
+import androidx.paging.PagingData
 import com.dkproject.domain.common.Resource
 import com.dkproject.domain.model.home.Guest
+import kotlinx.coroutines.flow.Flow
 
 interface GuestRepository {
     suspend fun uploadGuest(guest: Guest): Resource<Boolean>
+
+    suspend fun getGuest(position:String,date:Boolean):Flow<PagingData<Guest>>
 }

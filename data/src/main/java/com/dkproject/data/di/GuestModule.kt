@@ -2,6 +2,7 @@ package com.dkproject.data.di
 
 import com.dkproject.data.repository.GuestRepositoryImpl
 import com.dkproject.domain.repository.GuestRepository
+import com.dkproject.domain.usecase.home.GetGuestUseCase
 import com.dkproject.domain.usecase.home.UploadGuestUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Binds
@@ -25,7 +26,13 @@ object GuestModule2{
     }
     @Provides
     @Singleton
-    fun providetestguest2(guestTestRepository: GuestRepository):UploadGuestUseCase{
+    fun provideUploadGuestUseCase(guestTestRepository: GuestRepository):UploadGuestUseCase{
         return UploadGuestUseCase(guestTestRepository)
     }
+    @Provides
+    @Singleton
+    fun provideloadGuestUseCase(guestTestRepository: GuestRepository):GetGuestUseCase{
+        return GetGuestUseCase(guestTestRepository)
+    }
+
 }

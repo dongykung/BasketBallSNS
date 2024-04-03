@@ -44,6 +44,7 @@ import com.dkproject.presentation.ui.component.showToastMessage
 import com.dkproject.presentation.ui.screen.home.chat.ChatScreen
 import com.dkproject.presentation.ui.screen.home.club.ClubScreen
 import com.dkproject.presentation.ui.screen.home.home.HomeScreen
+import com.dkproject.presentation.ui.screen.home.home.HomeScreenViewModel
 import com.dkproject.presentation.ui.screen.home.profile.ProfileScreen
 import com.dkproject.presentation.ui.screen.home.shop.ShopHomeViewModel
 import com.dkproject.presentation.ui.screen.home.shop.ShopScreen
@@ -88,6 +89,7 @@ fun HomeNavigationScreen(
     padding: PaddingValues
 ) {
     val context = LocalContext.current
+    val homeScreenViewModel:HomeScreenViewModel= viewModel()
     val shopHomeViewModel : ShopHomeViewModel = viewModel()
 
     val writeShopActivityLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
@@ -107,7 +109,8 @@ fun HomeNavigationScreen(
         startDestination = HomeRoute.HOME.route
     ) {
         composable(route = HomeRoute.HOME.route) {
-            HomeScreen(onWriteClick = {
+            HomeScreen(viewModel = homeScreenViewModel,
+                onWriteClick = {
                 writeJobActivityLauncher.launch(Intent(context,WriteJobActivity::class.java))
             })
         }

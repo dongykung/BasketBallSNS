@@ -35,7 +35,6 @@ class ShopPagingSource @Inject constructor(
     override suspend fun load(params: LoadParams<QuerySnapshot>): LoadResult<QuerySnapshot, SimpleArticle> {
         try {
 
-            Log.d("category",category)
             val currentPage = if(category.equals("모두보기")) params.key ?: firestore.collection("Article")
                .limit(10).get().await()
             else params.key ?:
@@ -74,7 +73,6 @@ class ShopPagingSource @Inject constructor(
                 nextKey = nextPage
             )
         }catch (e:Exception){
-            Log.d("FailLoad", e.message.toString())
             return LoadResult.Error(e)
         }
     }

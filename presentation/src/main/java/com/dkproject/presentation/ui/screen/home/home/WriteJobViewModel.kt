@@ -5,8 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dkproject.domain.common.Resource
 import com.dkproject.domain.model.home.Guest
-import com.dkproject.domain.usecase.home.UploadGuestTestUseCase
+import com.dkproject.domain.usecase.home.UploadGuestUseCase
 import com.dkproject.domain.usecase.token.GetTokenUseCase
+import com.dkproject.presentation.util.converTimeMills
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,11 +21,14 @@ import javax.inject.Inject
 @HiltViewModel
 class WriteJobViewModel @Inject constructor(
     private val getTokenUseCase: GetTokenUseCase,
-    private val uploadGuestTestUseCase: UploadGuestTestUseCase
+    private val uploadGuestUseCase: UploadGuestUseCase
 ):ViewModel() {
 
+    companion object{
+        const val TAG = "WRTIEJOBVIEWMODEL"
+    }
     private val _state = MutableStateFlow(jobState("",uid=UUID.randomUUID().toString(),"", emptyList(),0,
-        "",0.0,0.0,"",time="00:00"))
+        "",0.0,0.0,"",time="00:00",hour=0,min=0))
     val state : StateFlow<jobState> = _state
 
     fun updatePositionList(position:String){
@@ -40,20 +44,28 @@ class WriteJobViewModel @Inject constructor(
             }
         }
     }
-    fun uploadGuest(){
+    fun uploadGuest(
+        success:()->Unit,
+        loading:()->Unit,
+        failed:()->Unit
+    ){
         viewModelScope.launch {
             val writeuid=getTokenUseCase()
             _state.update { it.copy(writeUid=writeuid!!) }
-            uploadGuestTestUseCase(state.value.toDomainModel()).onEach {result->
+            _state.update { it.copy(detaildate = converTimeMills(state.value.detaildate,state.value.hour,state.value.min)) }
+            uploadGuestUseCase(state.value.toDomainModel()).onEach {result->
                 when(result){
                     is Resource.Success->{
-                        Log.d("good", "uploadGuest: ")
+                        Log.d(TAG, "upload Success")
+                        success()
                     }
                     is Resource.Loading->{
-                        Log.d("good", "loading: ")
+                        Log.d(TAG, "loading..")
+                        loading()
                     }
                     is Resource.Error->{
-                        Log.d("good", "error: ")
+                        failed()
+                        Log.d(TAG, result.message?:"Upload Failed")
                     }
                 }
             }.launchIn(viewModelScope)
@@ -93,14 +105,25 @@ class WriteJobViewModel @Inject constructor(
     }
     fun updateDate(date:Long){
         _state.update {
-            it.copy(date=date)
+            it.copy(detaildate=date)
         }
     }
-    fun updateHour(time:String){
+    fun updateTime(time:String){
         _state.update {
             it.copy(time=time)
         }
     }
+    fun updateHour(hour:Int){
+        _state.update { it.copy(hour=hour) }
+    }
+
+    fun updatedaydate(date:Long){
+        _state.update { it.copy(daydate = date) }
+    }
+    fun updateMin(min:Int){
+        _state.update { it.copy(min=min) }
+    }
+
 
 }
 
@@ -115,8 +138,11 @@ data class jobState(
     val lat:Double,
     val lng:Double,
     val detailAddress:String,
-    val date:Long=System.currentTimeMillis(),
-    val time:String
+    val detaildate:Long=System.currentTimeMillis(),
+    val daydate:Long= System.currentTimeMillis(),
+    val time:String,
+    val hour:Int,
+    val min:Int,
 ){
     fun toDomainModel() : Guest{
         return Guest(
@@ -128,9 +154,10 @@ data class jobState(
             content=content,
             lat=lat,
             lng=lng,
+            guestsUid = emptyList(),
             detailAddress=detailAddress,
-            date=date,
-            time=time
+            detaildate=detaildate,
+            daydate=daydate
         )
     }
 }
