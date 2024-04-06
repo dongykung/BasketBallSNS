@@ -8,5 +8,9 @@ import kotlinx.coroutines.flow.Flow
 interface GuestRepository {
     suspend fun uploadGuest(guest: Guest): Resource<Boolean>
 
-    suspend fun getGuest(position:String,date:Boolean):Flow<PagingData<Guest>>
+    suspend fun getGuest(position:String,date:Long):Flow<PagingData<Guest>>
+
+    suspend fun getNearGuest(position:String,date:Long):Flow<PagingData<Guest>>
+
+    suspend fun getGuestItem(uid:String):Resource<Guest>
 }
