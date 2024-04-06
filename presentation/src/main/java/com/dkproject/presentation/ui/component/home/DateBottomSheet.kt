@@ -36,10 +36,8 @@ fun CustomDateBottomSheet(
 ) {
     val datePickerState = rememberDatePickerState()
 
-    var skipPartiallyExpanded by rememberSaveable {
-        mutableStateOf(false)
-    }
-    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = skipPartiallyExpanded)
+    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
     if (visible) {
         val windowInsets = BottomSheetDefaults.windowInsets
         ModalBottomSheet(modifier=modifier,
@@ -56,10 +54,12 @@ fun CustomDateBottomSheet(
                     },
                 )
                 Row {
-                    TextButton(onClick = { dismiss() }) {
+                    TextButton(modifier=Modifier.weight(1f),
+                        onClick = { dismiss() }) {
                         Text(text = "Cancel")
                     }
-                    TextButton(onClick = {
+                    TextButton(modifier=Modifier.weight(1f),
+                        onClick = {
                         if (datePickerState.selectedDateMillis != null) {
                             dateChange(datePickerState.selectedDateMillis!!)
                             dismiss()
@@ -68,6 +68,6 @@ fun CustomDateBottomSheet(
                         Text(text = "OK")
                     }
                 }
-            }
+        }
     }
 }
