@@ -13,7 +13,7 @@ import kotlinx.coroutines.tasks.await
 class GuestDataSource(
     val firestore: FirebaseFirestore,
     val category:String,
-    val date:Boolean
+    val date:Long
 ) : PagingSource<QuerySnapshot,Guest>() {
     companion object{
         const val TAG="GuestDataSource"
@@ -22,38 +22,46 @@ class GuestDataSource(
 
     override suspend fun load(params: LoadParams<QuerySnapshot>): LoadResult<QuerySnapshot, Guest> {
         try {
-            val currentPage = if(category.equals("모두보기")) params.key ?: firestore.collection("Guest")
-                .whereGreaterThan("detaildate",System.currentTimeMillis())
+            Log.d(TAG, category)
+
+            val currentPage = if(category.equals("모두보기")&& date.toInt() ==0) params.key ?: firestore.collection("Guest")
+                .whereGreaterThan("daydate",System.currentTimeMillis())
                 .limit(10).get().await()
-            else params.key ?:
+            else if(category.equals("모두보기")&&date.toInt()!=0) params.key ?:
             firestore.collection("Guest")
-                .whereArrayContains("positionList",category)
-                .whereGreaterThan("detaildate",System.currentTimeMillis()).limit(10).get().await()
+                .whereEqualTo("daydate",date).limit(10).get().await()
+            else if(!category.equals("모두보기")&&date.toInt()==0) params.key ?:
+            firestore.collection("Guest").whereArrayContains("positionList",category)
+                .whereGreaterThan("daydate",System.currentTimeMillis()).limit(10).get().await()
+                else params.key ?:
+                firestore.collection("Guest").whereArrayContains("positionList",category)
+                    .whereEqualTo("daydate",date).limit(10).get().await()
+
 
             val data = currentPage.documents.map {
                 it.toObject(GuestDTO::class.java)!!
             }
-            val formatData = if(date){
-                data.map {
+            val formatData = data.map {
                  it.toDomainModel()
-                }
-              .sortedBy { it.detaildate }
-            }else{
-                data.map {
-                  it.toDomainModel()
-                }.sortedByDescending { it.detaildate }
             }
+              .sortedBy { it.detaildate }
+
 
             val lastVisibleArticle = currentPage.documents[currentPage.size() - 1]
 
-            val nextPage = if(category.equals("모두보기")) firestore.collection("Guest")
-                .whereGreaterThan("detaildate",System.currentTimeMillis())
-                .limit(10).startAfter(lastVisibleArticle).get().await()
-            else
-                firestore.collection("Guest")
-                    .whereArrayContains("positionList",category)
-                    .whereGreaterThan("detaildate",System.currentTimeMillis())
-                    .limit(10).startAfter(lastVisibleArticle).get().await()
+            val nextPage = if(category.equals("모두보기")&& date.toInt() ==0) params.key ?: firestore.collection("Guest")
+                .whereGreaterThan("daydate",System.currentTimeMillis())
+                .startAfter(lastVisibleArticle).limit(10).get().await()
+            else if(category.equals("모두보기")&&date.toInt()!=0) params.key ?:
+            firestore.collection("Guest")
+                .whereEqualTo("daydate",date).startAfter(lastVisibleArticle).limit(10).get().await()
+            else if(!category.equals("모두보기")&&date.toInt()==0) params.key ?:
+            firestore.collection("Guest").whereArrayContains("positionList",category)
+                .whereGreaterThan("daydate",System.currentTimeMillis()).startAfter(lastVisibleArticle).limit(10).get().await()
+            else params.key ?:
+            firestore.collection("Guest").whereArrayContains("positionList",category)
+                .whereEqualTo("daydate",date).startAfter(lastVisibleArticle).limit(10).get().await()
+
 
             return LoadResult.Page(
                 data = formatData,
