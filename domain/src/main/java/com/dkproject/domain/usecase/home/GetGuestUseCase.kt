@@ -6,6 +6,6 @@ import com.dkproject.domain.repository.GuestRepository
 import kotlinx.coroutines.flow.Flow
 
 class GetGuestUseCase (private val guestRepository: GuestRepository) {
-    suspend operator fun invoke(position:String,date:Boolean):Flow<PagingData<Guest>> =
+    suspend operator fun invoke(position:String,date:Long):Flow<PagingData<Guest>> =
         guestRepository.getGuest(position,date)
 }
