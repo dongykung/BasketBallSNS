@@ -20,6 +20,9 @@ android {
         consumerProguardFiles("consumer-rules.pro")
         buildConfigField("String","GOOGLE_API_KEY",getApiKey("GOOGLE_API_KEY"))
         buildConfigField("String","GOOGLE_LOGIN_KEY",getApiKey("GOOGLE_LOGIN_KEY"))
+        buildConfigField("String","KAKAO_API_KEY",getApiKey("KAKAO_API_KEY"))
+        resValue("string","kakao_oauth_host",getApiKey("kakao_oauth_host"))
+
 
     }
 
@@ -100,6 +103,9 @@ dependencies {
     implementation("androidx.paging:paging-compose:3.2.1")
 
 
+    //kakao
+    implementation ("com.kakao.sdk:v2-user:2.20.0") // 카카오 로그인 API 모듈
+    implementation ("com.kakao.sdk:v2-share:2.20.0") // 카카오톡 공유 API 모듈
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")

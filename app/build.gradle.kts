@@ -21,6 +21,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+//        buildConfigField("String","KAKAO_API_KEY",getApiKey("KAKAO_API_KEY"))
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -76,6 +77,8 @@ dependencies {
     ksp ("com.google.dagger:hilt-compiler:2.48.1")
     ksp("androidx.hilt:hilt-compiler:1.2.0")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+
+    implementation ("com.kakao.sdk:v2-user:2.20.0") // 카카오 로그인 API 모듈
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
