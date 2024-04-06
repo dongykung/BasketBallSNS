@@ -1,5 +1,6 @@
 package com.dkproject.data.di
 
+import com.dkproject.data.repository.UserRepositoryImpl
 import com.dkproject.data.usecase.location.GetLastLocationUseCaseImpl
 import com.dkproject.data.usecase.login.CheckFirstUseCaseImpl
 import com.dkproject.data.usecase.shop.GetArticleUseCaseImpl
@@ -11,6 +12,7 @@ import com.dkproject.data.usecase.token.SetTokenUseCaseImpl
 import com.dkproject.data.usecase.user.CheckNicknameUseCaseImpl
 import com.dkproject.data.usecase.user.SetUserInfoUseCaseImpl
 import com.dkproject.data.usecase.user.UploadProfileImageUseCaseImpl
+import com.dkproject.domain.repository.UserRepository
 import com.dkproject.domain.usecase.location.GetLastLocationUseCase
 import com.dkproject.domain.usecase.login.CheckFirstUseCase
 import com.dkproject.domain.usecase.shop.GetArticleUseCase
@@ -20,6 +22,7 @@ import com.dkproject.domain.usecase.token.ClearTokenUseCase
 import com.dkproject.domain.usecase.token.GetTokenUseCase
 import com.dkproject.domain.usecase.token.SetTokenUseCase
 import com.dkproject.domain.usecase.user.CheckNicknameUseCase
+import com.dkproject.domain.usecase.user.GetUserInfoUseCase
 import com.dkproject.domain.usecase.user.SetUserInfoUseCase
 import com.dkproject.domain.usecase.user.UploadProfileImageUseCase
 import dagger.Binds
