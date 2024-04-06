@@ -45,7 +45,7 @@ fun HomeItemCard(
     val timeTimeFormatter = SimpleDateFormat("HH시mm분", Locale.getDefault())
     val dday = ddayFormatter.format(item.date).toInt()-ddayFormatter.format(System.currentTimeMillis()).toInt()
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp),
 

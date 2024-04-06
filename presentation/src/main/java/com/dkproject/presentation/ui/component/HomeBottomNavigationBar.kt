@@ -33,7 +33,6 @@ fun HomeBottomNavigationBar(navController: NavController) {
     NavigationBar {
         val navigationItem = listOf(
             HomeRoute.HOME,
-            HomeRoute.CLUB,
             HomeRoute.CHAT,
             HomeRoute.SHOP,
             HomeRoute.SETTING

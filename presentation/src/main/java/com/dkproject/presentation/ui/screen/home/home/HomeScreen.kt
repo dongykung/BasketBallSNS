@@ -3,8 +3,10 @@ package com.dkproject.presentation.ui.screen.home.home
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -21,6 +23,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -31,21 +34,27 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.dkproject.presentation.R
 import com.dkproject.presentation.model.ShopUiModel
 import com.dkproject.presentation.ui.component.HomeFloatingButton
 import com.dkproject.presentation.ui.component.HomeTopAppBar
+import com.dkproject.presentation.ui.component.PullToRefreshLazyColumn
 import com.dkproject.presentation.ui.component.home.CustomDateBottomSheet
 import com.dkproject.presentation.ui.component.shop.CustomBottomSheet
 import com.dkproject.presentation.ui.component.shop.DivisionChip
 import com.dkproject.presentation.ui.screen.home.shop.ShopCard
+import com.dkproject.presentation.util.converMillisToMonthday
 import com.dkproject.presentation.util.moveToSettingDialog
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     viewModel: HomeScreenViewModel,
+    guestItemClick:(String)->Unit,
     onWriteClick: () -> Unit
 ) {
     val state = viewModel.state.collectAsState().value
@@ -71,8 +80,14 @@ fun HomeScreen(
                     viewModel.updatePosition(position)
                 }, distanceChange = { distance ->
                     viewModel.updateDistacne(distance)
+                },
+                dateChange = { date ->
+                    viewModel.updateDate(date)
                 })
-            HomeItemList(items)
+            HomeItemList(homeItemList = items,
+                guestItemClick={
+                    guestItemClick(it)
+                })
         }
     }
 }
@@ -80,6 +95,7 @@ fun HomeScreen(
 @Composable
 private fun HomeItemList(
     homeItemList: LazyPagingItems<GuestUiModel>,
+    guestItemClick:(String)->Unit,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -93,7 +109,9 @@ private fun HomeItemList(
             }
         ) { index ->
             homeItemList[index]?.run {
-                HomeItemCard(item = this)
+                HomeItemCard(modifier=Modifier.clickable {
+                    guestItemClick(this.uid)
+                },item = this)
                 HorizontalDivider(modifier = Modifier.padding(vertical = 6.dp, horizontal = 12.dp))
             }
         }
@@ -105,6 +123,7 @@ private fun HomeItemList(
 fun HomeDivisionSection(
     modifier: Modifier = Modifier,
     positionValue: String,
+    dateChange: (Long) -> Unit,
     distance: Boolean,
     onPositionChange: (String) -> Unit,
     distanceChange: (Boolean) -> Unit,
@@ -112,15 +131,17 @@ fun HomeDivisionSection(
     val context = LocalContext.current
     var isPositionBottomSheetVisible by rememberSaveable { mutableStateOf(false) }
     val position = listOf("모두보기", "포인트 가드", "슈팅 가드", "파워 포워드", "스몰 포워드", "센터")
-    
+
     var datetext by remember {
         mutableStateOf("날짜")
     }
     var isDateBottomSheetVisible by rememberSaveable { mutableStateOf(false) }
-    if(isDateBottomSheetVisible){
-        CustomDateBottomSheet(modifier=Modifier.fillMaxHeight(),
-            visible = isDateBottomSheetVisible, dismiss = { isDateBottomSheetVisible=false}) {
-
+    if (isDateBottomSheetVisible) {
+        CustomDateBottomSheet(modifier = Modifier.fillMaxHeight(0.7f),
+            visible = isDateBottomSheetVisible,
+            dismiss = { isDateBottomSheetVisible = false }) { selectDayMillis ->
+            dateChange(selectDayMillis)
+            datetext = converMillisToMonthday(selectDayMillis)
         }
     }
     if (isPositionBottomSheetVisible) {
@@ -132,7 +153,7 @@ fun HomeDivisionSection(
             },
             onDismiss = { isPositionBottomSheetVisible = false })
     }
-   
+
     var permissionDialog by remember { mutableStateOf(false) }
     if (permissionDialog)
         moveToSettingDialog(context, permissionDialog, changeOpenDialog = {
@@ -169,9 +190,9 @@ fun HomeDivisionSection(
             onClick = {
                 isPositionBottomSheetVisible = true
             })
-        
+
         DivisionChip(value = datetext, onClick = {
-            isDateBottomSheetVisible=true
+            isDateBottomSheetVisible = true
         })
         DivisionChip(value = "내 주변 보기", arrow = false, distance = distance, onClick = {
             permissionLauncher.launch(
