@@ -21,7 +21,8 @@ enum class WriteJobRoute(val route: String) {
 @Composable
 fun WriteJobNavigation(
     navController: NavHostController = rememberNavController(),
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onLoad:()->Unit,
 ) {
     val sharedViewModel: WriteJobViewModel = viewModel()
     NavHost(navController = navController, startDestination = WriteJobRoute.WRITE.route) {
@@ -29,7 +30,8 @@ fun WriteJobNavigation(
             WriteJobScreen(viewModel = sharedViewModel, onBackClick = onBackClick,
                 setAddress = {
                     navController.navigate(route = WriteShopRoute.ADDRESS.route)
-                })
+                },
+                onLoad=onLoad)
         }
         composable(WriteJobRoute.ADDRESS.route) {
             SetAddressScreen(updatelat = {lat->
