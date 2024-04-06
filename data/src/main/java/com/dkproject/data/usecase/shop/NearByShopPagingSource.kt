@@ -1,36 +1,44 @@
 package com.dkproject.data.usecase.shop
 
 import android.util.Log
+import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.dkproject.data.model.ArticleDTO
 import com.dkproject.domain.model.shop.SimpleArticle
+import com.dkproject.domain.usecase.location.GetLastLocationUseCase
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class NearByShopPagingSource @Inject constructor(
-    private val firestore: FirebaseFirestore
+    private val firestore: FirebaseFirestore,
+    private val getLastLocationUseCase: GetLastLocationUseCase,
+    val category: String ,
+    val sortByPrice: Boolean ,
+    val change:Boolean
 ) :PagingSource<QuerySnapshot,SimpleArticle>(){
-    var category: String = ""
-    var sortByPrice: Boolean = true
-    var change:Boolean = true
-    fun setParams(category: String, sortByPrice: Boolean,change :Boolean) {
-        this.category = category
-        this.sortByPrice = sortByPrice
-        this.change=change
-    }
+
+
     override fun getRefreshKey(state: PagingState<QuerySnapshot, SimpleArticle>): QuerySnapshot?=null
 
 
 
     override suspend fun load(params: LoadParams<QuerySnapshot>): LoadResult<QuerySnapshot, SimpleArticle> {
         try {
+//            var lat :Double =0.0
+//            var lng : Double = 0.0
+//            getLastLocationUseCase.requestCurrentLocation().collect{
+//                lat = it.Lat
+//                lng = it.Lng
+//            }
             val center = GeoLocation(37.3774437,126.98378539999999)
             val radius = 5.0*1000.0
             val bounds  = GeoFireUtils.getGeoHashQueryBounds(center,radius)
