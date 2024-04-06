@@ -20,12 +20,12 @@ class SetUserInfoUseCaseImpl @Inject constructor(
             "playStyle" to userInfo.playStyle,
             "userSkill" to userInfo.userSkill
         )
-        try {
+        return try {
             firestore.collection("users").document(userInfo.useruid)
                 .set(userData, SetOptions.merge()).await()
-            return true
+            true
         } catch (e: FirebaseException) {
-            return false
+            false
         }
     }
 }
