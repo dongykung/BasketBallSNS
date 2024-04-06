@@ -17,6 +17,11 @@ fun converTimeMills(dateMIlls:Long,hour:Int,minute:Int):Long{
     return cal.timeInMillis
 }
 
+fun converMillisToMonthday(millis:Long):String{
+    val formatter = SimpleDateFormat("MM.dd", Locale.getDefault())
+    return formatter.format(millis)
+}
+
 fun getDayOfWeekFromMillis(millis:Long):String{
     val calendar = Calendar.getInstance()
     calendar.timeInMillis = millis
