@@ -100,7 +100,7 @@ fun PlayPositionScreen(
 @Composable
 fun PositionFlow(
     selectList: List<String>,
-    onPositionClick: (String) -> Unit
+    onPositionClick: (String) -> Unit={}
 ) {
 
     val positionList: List<String> = listOf(

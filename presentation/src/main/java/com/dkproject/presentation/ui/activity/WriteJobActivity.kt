@@ -1,5 +1,7 @@
 package com.dkproject.presentation.ui.activity
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,9 +16,13 @@ class WriteJobActivity:ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             BasketballSNSTheme {
-                WriteJobNavigation() {
+                WriteJobNavigation(onBackClick = {
                     finish()
-                }
+                },
+                    onLoad = {
+                        setResult(Activity.RESULT_OK, Intent())
+                        finish()
+                    })
             }
         }
     }

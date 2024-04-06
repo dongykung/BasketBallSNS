@@ -42,6 +42,7 @@ fun WriteJobScreen(
     viewModel: WriteJobViewModel,
     onBackClick: () -> Unit,
     setAddress:()->Unit,
+    onLoad:()->Unit,
 ) {
     var visible by rememberSaveable { mutableStateOf(false) }
     if (visible)
@@ -125,7 +126,7 @@ fun WriteJobScreen(
                     enabled = valid,
                     onClick = {
                         viewModel.uploadGuest(
-                            success = onBackClick,
+                            success = onLoad,
                             loading ={loadingProgressBar=true},
                             failed = {loadingProgressBar=false}
                         )
