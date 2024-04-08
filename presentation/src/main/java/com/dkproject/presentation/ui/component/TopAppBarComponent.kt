@@ -12,6 +12,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import com.dkproject.presentation.R
 
 
@@ -45,7 +46,9 @@ fun HomeTopAppBar(
     TopAppBar(title = {
         Text(
             text = title,
-            style = MaterialTheme.typography.headlineSmall
+            style = MaterialTheme.typography.headlineSmall,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
     },
         scrollBehavior = scrollBehavior,
