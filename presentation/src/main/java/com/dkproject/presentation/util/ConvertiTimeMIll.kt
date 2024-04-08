@@ -22,6 +22,11 @@ fun converMillisToMonthday(millis:Long):String{
     return formatter.format(millis)
 }
 
+fun convertiChatTimeMillis(millis:Long):String{
+    val formatter = SimpleDateFormat("hh:mm a")
+    return formatter.format(millis)
+}
+
 fun getDayOfWeekFromMillis(millis:Long):String{
     val calendar = Calendar.getInstance()
     calendar.timeInMillis = millis
