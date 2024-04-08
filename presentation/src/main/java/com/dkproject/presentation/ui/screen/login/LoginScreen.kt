@@ -29,6 +29,7 @@ import com.dkproject.presentation.R
 import com.dkproject.presentation.ui.activity.HomeActivity
 import com.dkproject.presentation.ui.activity.UserFirstActivity
 import com.dkproject.presentation.ui.component.GoogleButton
+import com.dkproject.presentation.ui.component.KakaoButton
 import com.dkproject.presentation.ui.theme.BasketballSNSTheme
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
@@ -91,6 +92,27 @@ fun LoginScreen(
                         onClick = {
                             Log.d("Test", "onclick")
                             launcher.launch(viewModel.googleClientIntent)
+                        })
+                    Spacer(modifier = Modifier.height(22.dp))
+                    KakaoButton(modifier= Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp)
+                        .height(50.dp),
+                        onClick = {
+                            viewModel.kakaoSignIn(
+                                context=context,
+                                moveToFirst = {
+                                    context.startActivity(Intent(context, UserFirstActivity::class.java).apply {
+                                        flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                                        putExtra("Uid",it)
+                                    })
+                                },
+                                moveToHome = {
+                                    context.startActivity(Intent(context, HomeActivity::class.java).apply {
+                                        flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                                    })
+                                }
+                            )
                         })
                 }
             }
