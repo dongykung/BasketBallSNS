@@ -14,6 +14,7 @@ import com.dkproject.domain.usecase.user.SetUserInfoUseCase
 import com.dkproject.domain.usecase.user.UploadProfileImageUseCase
 import com.dkproject.presentation.R
 import com.dkproject.presentation.ui.component.showToastMessage
+import com.dkproject.presentation.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -51,6 +52,7 @@ class UserFirstViewModel @Inject constructor(
                 updateProfileImage(result)
                 if(setUserInfoUseCase(state.value.toDomainModel())){
                     setTokenUseCase(state.value.useruid)
+                    Constants.myToken = state.value.useruid
                     moveToHome()
                 }else{
                     showToastMessage(context,context.getString(R.string.failedsetting))
