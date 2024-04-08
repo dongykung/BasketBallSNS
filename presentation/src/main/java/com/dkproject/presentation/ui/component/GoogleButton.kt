@@ -31,7 +31,6 @@ fun GoogleButton(
     Surface(
         modifier = modifier.clickable { onClick() },
         shape = RoundedCornerShape(8.dp),
-        border = BorderStroke(width = 1.dp,color=Color.LightGray),
         color = Color.White
     ) {
         Row(modifier=Modifier.padding(12.dp),

@@ -90,6 +90,7 @@ dependencies {
 
     //firebase geo
     implementation("com.firebase:geofire-android-common:3.2.0")
+    implementation("com.google.firebase:firebase-database-ktx")
 
 
     //googlemap
@@ -106,6 +107,9 @@ dependencies {
     //kakao
     implementation ("com.kakao.sdk:v2-user:2.20.0") // 카카오 로그인 API 모듈
     implementation ("com.kakao.sdk:v2-share:2.20.0") // 카카오톡 공유 API 모듈
+
+
+
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
