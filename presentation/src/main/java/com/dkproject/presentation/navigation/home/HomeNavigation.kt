@@ -114,7 +114,7 @@ fun HomeNavigationScreen(
 
 
         composable(route = HomeRoute.CHAT.route) {
-            ChatScreen()
+
         }
         composable(route = HomeRoute.SHOP.route) {
             ShopScreen( viewModel = shopHomeViewModel,
