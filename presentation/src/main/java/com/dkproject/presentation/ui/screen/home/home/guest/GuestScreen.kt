@@ -1,5 +1,6 @@
 package com.dkproject.presentation.ui.screen.home.home.guest
 
+import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -30,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -40,6 +42,7 @@ import com.dkproject.domain.common.Resource
 import com.dkproject.domain.model.UserInfo
 import com.dkproject.domain.model.home.Guest
 import com.dkproject.presentation.R
+import com.dkproject.presentation.ui.activity.ChatActivity
 import com.dkproject.presentation.ui.component.HomeTopAppBar
 import com.dkproject.presentation.ui.component.home.GuestInfoSection
 import com.dkproject.presentation.ui.component.home.WriterInfoSection
@@ -51,12 +54,13 @@ fun GuestScreen(
     viewModel: GuestViewModel,
     onBackClick: () -> Unit
 ) {
+    val context= LocalContext.current
     val state = viewModel.state.collectAsState().value
     val loading = viewModel.loading
     val error = viewModel.error
     Scaffold(topBar = {
         HomeTopAppBar(
-            title = "",
+            title = state.guest.title,
             onBack = true,
             onBackClick = {
                 onBackClick()
@@ -69,12 +73,18 @@ fun GuestScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 12.dp)){
                 Button(modifier=Modifier.weight(1f),
-                    onClick = { /*TODO*/ }) {
+                    onClick = {
+
+                    }) {
                     Text(text = "신청하기")
                 }
                 Spacer(modifier = Modifier.width(10.dp))
                 Button(modifier=Modifier.weight(1f),
-                    onClick = { /*TODO*/ }) {
+                    onClick = {
+                        context.startActivity(Intent(context,ChatActivity::class.java).apply {
+                            putExtra("UserUid",state.guest.writeUid)
+                        })
+                    }) {
                     Text(text = "채팅하기")
                 }
             }
