@@ -90,8 +90,13 @@ dependencies {
 
     //firebase geo
     implementation("com.firebase:geofire-android-common:3.2.0")
+
+    //realtime database
     implementation("com.google.firebase:firebase-database-ktx")
 
+
+    //threetenabp - java - time
+    implementation("com.jakewharton.threetenabp:threetenabp:1.4.7")
 
     //googlemap
     implementation("com.google.maps.android:maps-compose:4.3.3")

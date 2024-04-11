@@ -7,6 +7,10 @@
     <string name="market">플리마켓</string>
     <string name="guest">구인구직</string>
 
+    <string name="category">카테고리.</string>
+    <string name="articlename">제품명</string>
+    <string name="articleexplain">설명</string>
+
 
     <string name="settingCancel">진행한 작업은 저장되지 않습니다.</string>
     <string name="settingCancel2">정말 종료하시겠습니까?</string>

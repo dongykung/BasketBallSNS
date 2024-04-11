@@ -78,6 +78,9 @@ dependencies {
     ksp("androidx.hilt:hilt-compiler:1.2.0")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
+    //threetenabp - java - time
+    implementation("com.jakewharton.threetenabp:threetenabp:1.4.7")
+
     implementation ("com.kakao.sdk:v2-user:2.20.0") // 카카오 로그인 API 모듈
 
     implementation("androidx.core:core-ktx:1.12.0")
