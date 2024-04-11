@@ -43,7 +43,7 @@ class ChatViewModel @Inject constructor(
     private val getChatItemUseCase: GetChatItemUseCase,
 ) : ViewModel() {
     private val _state =
-        MutableStateFlow(ChatUiState(UserInfo("", "", "", emptyList(), emptyList(), ""), "", false,
+        MutableStateFlow(ChatUiState(UserInfo("", "", "", emptyList(), emptyList(), ""),  false,
             emptyList()
         ))
     val state: StateFlow<ChatUiState> = _state.asStateFlow()
@@ -96,32 +96,29 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun updateMyMessage(msg: String) {
-        _state.update { it.copy(myMessage = msg) }
-    }
 
-    fun sendMessage(otherUid: String, context: Context) {
+
+    fun sendMessage(otherUid: String,msg:String, context: Context) {
         viewModelScope.launch {
             val myUid = getTokenUseCase()
             val chatRoomUid = UUID.randomUUID().toString()
             if (myUid != null) {
                 val data = ChatRoom(
                     chatRoomId = chatRoomUid,
-                    lastMessage = state.value.myMessage,
+                    lastMessage = msg,
                     lastMessageTime = System.currentTimeMillis(),
                     otherUserUid = otherUid
                 )
                 getUpdateChatRoomUseCase(myUid = myUid, chatRoom = data).onSuccess { roomuid ->
                     val message = ChatMessage(
                         chatId = "",
-                        message = state.value.myMessage,
+                        message = msg,
                         time = 0,
                         userUid = myUid,
                     )
                     uploadChatUseCase(roomUid = roomuid, message = message).onFailure {
                         showToastMessage(context, "메시지 전송에 실패했습니다")
                     }.onSuccess {
-                        updateMyMessage("")
                         if(!state.value.isEXist){
                             getChatItemUseCase(chatRoomUid).collect{
                                 updateMessage(it)
@@ -137,14 +134,8 @@ class ChatViewModel @Inject constructor(
 
 data class ChatUiState(
     val userInfo: UserInfo,
-    val myMessage: String,
     val isEXist: Boolean,
     val messages :List<ChatMessage>
 )
 
-data class messageTest(
-    var chatId:String="",
-    val message:String="",
-    val time:Long = System.currentTimeMillis(),
-    val userUid:String="",
-)
+
