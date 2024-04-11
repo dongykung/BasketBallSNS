@@ -2,7 +2,9 @@ package com.dkproject.presentation.ui.component.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -40,11 +42,12 @@ fun CustomDateBottomSheet(
 
     if (visible) {
         val windowInsets = BottomSheetDefaults.windowInsets
-        ModalBottomSheet(modifier=modifier,
+        ModalBottomSheet(modifier=modifier.fillMaxWidth(),
             sheetState = bottomSheetState,
             windowInsets = windowInsets,
             onDismissRequest = { dismiss() }) {
                 DatePicker(
+                    modifier=Modifier.weight(9f),
                     state = datePickerState,
                     title = {
                         Text(
@@ -53,7 +56,7 @@ fun CustomDateBottomSheet(
                         )
                     },
                 )
-                Row {
+                Row (modifier=Modifier.weight(1f)){
                     TextButton(modifier=Modifier.weight(1f),
                         onClick = { dismiss() }) {
                         Text(text = "Cancel")
@@ -68,6 +71,7 @@ fun CustomDateBottomSheet(
                         Text(text = "OK")
                     }
                 }
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }
