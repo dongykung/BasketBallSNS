@@ -190,7 +190,15 @@ fun SearchSection(
                 text = it
                 ontextChange(it)
             },
-            colors = TextFieldDefaults.colors(Color.White)
+            colors = TextFieldDefaults.colors(unfocusedContainerColor = Color.White,
+                focusedContainerColor = Color.White,
+                ),
+            leadingIcon = {
+                          Icon(imageVector = Icons.Outlined.Search, contentDescription = "")
+            },
+            placeholder = {
+                Text(text = "검색을 통해 장소를 선택해주세요.")
+            }
         )
         AnimatedVisibility(visible = visible) {
             LazyColumn(verticalArrangement = Arrangement.spacedBy(4.dp)) {
