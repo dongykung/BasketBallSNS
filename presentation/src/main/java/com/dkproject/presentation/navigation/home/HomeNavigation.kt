@@ -23,6 +23,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -31,9 +32,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.dkproject.presentation.ui.activity.GuestDetailActivity
+import com.dkproject.presentation.ui.activity.ShopDetailActivity
 import com.dkproject.presentation.ui.activity.WriteJobActivity
 import com.dkproject.presentation.ui.activity.WriteShopActivity
 import com.dkproject.presentation.ui.component.HomeBottomNavigationBar
+import com.dkproject.presentation.ui.screen.home.chat.ChatRoomScreen
+import com.dkproject.presentation.ui.screen.home.chat.ChatRoomViewModel
 import com.dkproject.presentation.ui.screen.home.chat.ChatScreen
 import com.dkproject.presentation.ui.screen.home.home.HomeScreen
 import com.dkproject.presentation.ui.screen.home.home.HomeScreenViewModel
@@ -83,7 +87,6 @@ fun HomeNavigationScreen(
     val context = LocalContext.current
     val homeScreenViewModel:HomeScreenViewModel= viewModel()
     val shopHomeViewModel : ShopHomeViewModel = viewModel()
-
     val writeShopActivityLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
         if(it.resultCode== Activity.RESULT_OK){
             shopHomeViewModel.updateload()
@@ -114,13 +117,18 @@ fun HomeNavigationScreen(
 
 
         composable(route = HomeRoute.CHAT.route) {
-
+            ChatRoomScreen()
         }
         composable(route = HomeRoute.SHOP.route) {
             ShopScreen( viewModel = shopHomeViewModel,
                 onWriteClick = {
                     writeShopActivityLauncher.launch(Intent(context,WriteShopActivity::class.java))
-            })
+            },
+                clickItem = {uid->
+                    context.startActivity(Intent(context,ShopDetailActivity::class.java).apply {
+                        putExtra("uid",uid)
+                    })
+                })
         }
         composable(route = HomeRoute.SETTING.route) {
             ProfileScreen()
