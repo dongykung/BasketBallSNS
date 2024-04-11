@@ -43,6 +43,7 @@ import com.dkproject.domain.model.UserInfo
 import com.dkproject.domain.model.home.Guest
 import com.dkproject.presentation.R
 import com.dkproject.presentation.ui.activity.ChatActivity
+import com.dkproject.presentation.ui.activity.UserProfileActivity
 import com.dkproject.presentation.ui.component.HomeTopAppBar
 import com.dkproject.presentation.ui.component.home.GuestInfoSection
 import com.dkproject.presentation.ui.component.home.WriterInfoSection
@@ -105,7 +106,11 @@ fun GuestScreen(
                 Column(modifier= Modifier
                     .padding(horizontal = 16.dp)
                     .verticalScroll(rememberScrollState())) {
-                    WriterInfoSection(user = state.userInfo)
+                    WriterInfoSection(user = state.userInfo){uid->
+                        context.startActivity(Intent(context, UserProfileActivity::class.java).apply {
+                            putExtra("userUid",uid)
+                        })
+                    }
                     HorizontalDivider(modifier=Modifier.padding(horizontal = 16.dp))
                     GuestInfoSection(modifier= Modifier
                         .padding(top = 16.dp)
