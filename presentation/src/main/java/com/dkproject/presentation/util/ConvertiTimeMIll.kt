@@ -1,6 +1,11 @@
 package com.dkproject.presentation.util
 
-import com.dkproject.domain.model.home.Guest
+
+import android.util.Log
+import org.threeten.bp.Instant
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
+import org.threeten.bp.format.DateTimeFormatter
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -23,7 +28,7 @@ fun converMillisToMonthday(millis:Long):String{
 }
 
 fun convertiChatTimeMillis(millis:Long):String{
-    val formatter = SimpleDateFormat("hh:mm a")
+    val formatter = SimpleDateFormat("a hh:mm", Locale.getDefault())
     return formatter.format(millis)
 }
 
@@ -42,3 +47,20 @@ fun getDayOfWeekFromMillis(millis:Long):String{
     }
 }
 
+fun displayDateInfo(milliseconds: Long): String {
+    // 현재 시간대를 기준으로 Instant 생성
+    // Api level 호환하기 위해 ThreetenABP 의 Instant 사용
+    val instant = Instant.ofEpochMilli(milliseconds)
+    val dateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
+    val now = LocalDateTime.now(ZoneId.systemDefault())
+    Log.d("now-time : ", now.toString())
+    Log.d("now-time : ", now.toLocalDate().toString())
+
+    return if(dateTime.toLocalDate().isEqual(now.toLocalDate())){
+        dateTime.format(DateTimeFormatter.ofPattern("a hh:mm"))
+    }else if(dateTime.toLocalDate().isEqual(now.toLocalDate().minusDays(1))){
+        "어제"
+    }else{
+        dateTime.format(DateTimeFormatter.ofPattern("MM-dd"))
+    }
+}
