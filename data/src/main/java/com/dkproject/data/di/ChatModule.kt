@@ -5,6 +5,7 @@ import com.dkproject.data.repository.ChatRoomRepositoryImpl
 import com.dkproject.domain.repository.ChatRepository
 import com.dkproject.domain.repository.ChatRoomRepository
 import com.dkproject.domain.usecase.chat.GetChatItemUseCase
+import com.dkproject.domain.usecase.chat.GetChatRoomsUseCase
 import com.dkproject.domain.usecase.chat.GetChatUidCheckUseCase
 import com.dkproject.domain.usecase.chat.GetUpdateChatRoomUseCase
 import com.dkproject.domain.usecase.chat.UploadChatUseCase
@@ -50,5 +51,11 @@ object ChatModule {
     @Singleton
     fun provideGetChatItemUseCase(chatRepository: ChatRepository):GetChatItemUseCase {
         return GetChatItemUseCase(chatRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetChatRoomUseCase(chatRoomRepository: ChatRoomRepository):GetChatRoomsUseCase {
+        return GetChatRoomsUseCase(chatRoomRepository)
     }
 }
