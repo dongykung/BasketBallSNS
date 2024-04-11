@@ -1,10 +1,17 @@
 package com.dkproject.data.repository
 
+import android.util.Log
 import com.dkproject.data.model.ChatRoomDTO
 import com.dkproject.domain.model.chat.ChatRoom
 import com.dkproject.domain.repository.ChatRoomRepository
-import com.dkproject.domain.usecase.token.GetTokenUseCase
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -66,5 +73,49 @@ class ChatRoomRepositoryImpl @Inject constructor(
             return null
         }
     }
+
+    override suspend fun getChatRooms(userUid: String):Flow<ChatRoom> = callbackFlow {
+        var ref : DatabaseReference?= null
+        try {
+            ref = firebaseDatabase.reference.child("ChatRoom").child(userUid)
+        }catch (e:Throwable){
+            close(e)
+        }
+
+        val subscription = ref?.
+        addChildEventListener(object: ChildEventListener{
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                val chatRoom = snapshot.getValue(ChatRoomDTO::class.java)?.toDomainModel()
+                chatRoom?:return
+                try {
+                    Log.d("ChatRepositoryImpl", chatRoom.toString())
+                    trySend(chatRoom)
+                }catch (e:Throwable){
+
+                }
+            }
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                val chatRoom = snapshot.getValue(ChatRoomDTO::class.java)?.toDomainModel()
+                chatRoom?:return
+                try {
+                    Log.d("ChatRepositoryImpl", chatRoom.toString())
+                    trySend(chatRoom)
+                }catch (e:Throwable){
+
+                }
+            }
+            override fun onChildRemoved(snapshot: DataSnapshot) {}
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
+            override fun onCancelled(error: DatabaseError) {}
+        })
+
+        awaitClose{
+            if (subscription != null) {
+                ref?.removeEventListener(subscription)
+            }
+        }
+    }
+
+
 }
 
