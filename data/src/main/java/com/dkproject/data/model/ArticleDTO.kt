@@ -1,5 +1,6 @@
 package com.dkproject.data.model
 
+import com.dkproject.domain.model.shop.Articles
 import com.dkproject.domain.model.shop.SimpleArticle
 import com.google.firebase.firestore.GeoPoint
 
@@ -25,6 +26,21 @@ data class ArticleDTO(
             detailAddress = detailAddress,
             image = imageList.get(0),
             type=type
+        )
+    }
+
+    fun toDomainModel():Articles{
+        return Articles(
+            writerUid=writerUid,
+         uid=uid,
+         name=name,
+         imageList=imageList,
+         price=price,
+         type=type,
+         content=content,
+         detailAddress=detailAddress,
+         lat=lat,
+         lng=lng,
         )
     }
 }
