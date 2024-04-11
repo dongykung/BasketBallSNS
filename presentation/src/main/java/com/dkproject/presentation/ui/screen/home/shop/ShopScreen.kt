@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -54,6 +55,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.dkproject.presentation.R
 import com.dkproject.presentation.model.ShopUiModel
+import com.dkproject.presentation.ui.activity.ShopDetailActivity
 import com.dkproject.presentation.ui.activity.WriteShopActivity
 import com.dkproject.presentation.ui.component.HomeFloatingButton
 import com.dkproject.presentation.ui.component.HomeTopAppBar
@@ -68,9 +70,10 @@ import com.dkproject.presentation.util.moveToSettingDialog
 @Composable
 fun ShopScreen(
     viewModel: ShopHomeViewModel,
-    onWriteClick: () -> Unit
+    onWriteClick: () -> Unit,
+    clickItem: (String) -> Unit
 ) {
-
+    val context = LocalContext.current
     val state = viewModel.state.collectAsState().value
     val items: LazyPagingItems<ShopUiModel> = state.shopList.collectAsLazyPagingItems()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -104,7 +107,7 @@ fun ShopScreen(
                     viewModel.categoryChange(it)
                 }
             )
-            ShopListSection(items)
+            ShopListSection(shopCardModels = items, clickItem = clickItem)
         }
     }
 }
@@ -112,6 +115,7 @@ fun ShopScreen(
 @Composable
 fun ShopListSection(
     shopCardModels: LazyPagingItems<ShopUiModel>,
+    clickItem:(String)->Unit,
 ) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         items(
@@ -122,6 +126,7 @@ fun ShopListSection(
         ) { index ->
             shopCardModels[index]?.run {
                 ShopCard(
+                    modifier=Modifier.clickable { clickItem(this.uid) },
                     profileImage = this.image,
                     name = this.name,
                     address = this.detailAddress,
