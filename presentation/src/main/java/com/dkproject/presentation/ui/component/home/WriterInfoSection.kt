@@ -1,6 +1,7 @@
 package com.dkproject.presentation.ui.component.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -30,12 +31,13 @@ import com.dkproject.presentation.ui.theme.BasketballSNSTheme
 @Composable
 fun WriterInfoSection(
     modifier: Modifier = Modifier,
-    user: UserInfo
+    user: UserInfo,
+    profileClick:(String)->Unit
 ) {
     Column(modifier = modifier
         .padding(top = 8.dp)
         ) {
-        Row(modifier= Modifier.fillMaxWidth(),
+        Row(modifier= Modifier.fillMaxWidth().clickable { profileClick(user.useruid) },
             verticalAlignment = Alignment.CenterVertically) {
             Image(painter = rememberAsyncImagePainter(model = user.profileImageUrl), contentDescription = "",
                 contentScale = ContentScale.Crop,
@@ -59,6 +61,8 @@ fun WriterInfoSection(
 @Composable
 fun PreviewWriterInfo(){
     BasketballSNSTheme {
-        WriterInfoSection(user = UserInfo("","동경","", listOf("포인트 가드","파워 포워드"), emptyList(),""))
+        WriterInfoSection(user = UserInfo("","동경","", listOf("포인트 가드","파워 포워드"), emptyList(),"")){
+
+        }
     }
 }
