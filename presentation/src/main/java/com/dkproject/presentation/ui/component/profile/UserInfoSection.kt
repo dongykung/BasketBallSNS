@@ -35,12 +35,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.dkproject.domain.model.UserInfo
+import com.dkproject.presentation.ui.screen.home.profile.UserInfoUiModel
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun UserInfoSection(
     modifier: Modifier = Modifier,
-    userInfo: UserInfo
+    userInfo: UserInfo,
+    editProfile:()->Unit,
 ) {
     Column(modifier = modifier) {
         Row(modifier= Modifier
@@ -61,10 +63,13 @@ fun UserInfoSection(
                 style = TextStyle(color = Color.Black, fontSize = 20.sp)
             )
             Spacer(modifier = Modifier.weight(1f))
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = {
+                editProfile()
+            }) {
                 Icon(imageVector = Icons.Outlined.Edit, contentDescription = "Edit")
             }
         }
+
 
         Spacer(modifier = Modifier.height(40.dp))
         userInfoDetail("포지션",userInfo.playPosition)
