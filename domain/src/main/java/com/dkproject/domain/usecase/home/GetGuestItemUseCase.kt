@@ -7,13 +7,5 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class GetGuestItemUseCase(private val guestRepository: GuestRepository){
-    suspend operator fun invoke(uid:String) : Flow<Resource<Guest>> = flow {
-        try {
-            emit(Resource.Loading())
-            emit(guestRepository.getGuestItem(uid))
-        }catch (e:Exception){
-            emit(Resource.Error(e.message.toString()))
-        }
-
-    }
+    suspend operator fun invoke(uid:String) : Flow<Guest> = guestRepository.getGuestItem(uid)
 }
