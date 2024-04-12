@@ -12,5 +12,7 @@ interface GuestRepository {
 
     suspend fun getNearGuest(position:String,date:Long):Flow<PagingData<Guest>>
 
-    suspend fun getGuestItem(uid:String):Resource<Guest>
+    suspend fun getGuestItem(uid:String): Flow<Guest>
+
+    suspend fun applyGuest(guestItemUid:String,userlist:List<String>) :Resource<Boolean>
 }
