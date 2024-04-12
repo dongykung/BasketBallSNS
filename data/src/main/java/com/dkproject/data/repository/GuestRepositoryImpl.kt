@@ -13,9 +13,13 @@ import com.dkproject.domain.model.home.Guest
 import com.dkproject.domain.repository.GuestRepository
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import java.util.Calendar
 import javax.inject.Inject
@@ -68,12 +72,33 @@ class GuestRepositoryImpl @Inject constructor(private val firestore: FirebaseFir
             pagingSourceFactory = { NearGuestDataSource(firestore,position,date)}
         ).flow
 
-    override suspend fun getGuestItem(uid: String): Resource<Guest> {
+    override suspend fun getGuestItem(uid: String): Flow<Guest> = callbackFlow {
+        var eventsDocument : DocumentReference ?= null
+        try {
+            eventsDocument = firestore.collection("Guest").document(uid)
+        }catch (e:Throwable){
+            close(e)
+        }
+
+        val subscription = eventsDocument?.addSnapshotListener{ snapshot,error->
+            if(snapshot==null) return@addSnapshotListener
+            try {
+                trySend(snapshot.toObject(GuestDTO::class.java)?.toDomainModel()!!)
+            }catch (e:Throwable){
+
+            }
+        }
+
+        awaitClose{ subscription?.remove()}
+    }
+
+
+
+    override suspend fun applyGuest(guestItemUid: String,userlist:List<String>) :Resource<Boolean>{
         return try {
-            val query = firestore.collection("Guest").document(uid).get().await()
-            val data = query.toObject(GuestDTO::class.java)?.toDomainModel()!!
-            Resource.Success(data)
-        } catch (e: Exception) {
+            firestore.collection("Guest").document(guestItemUid).update("guestsUid",userlist).await()
+            Resource.Success(true)
+        }catch (e:Exception){
             Resource.Error(e.message.toString())
         }
     }
