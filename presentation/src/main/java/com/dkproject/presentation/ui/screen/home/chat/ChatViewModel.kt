@@ -66,7 +66,7 @@ class ChatViewModel @Inject constructor(
     }
 
     fun updateMessage(item:ChatMessage){
-        val list = (state.value.messages + item).sortedBy { it.time }
+        val list = (state.value.messages + item).sortedByDescending { it.time }
         _state.update { it.copy(messages = list) }
     }
 
