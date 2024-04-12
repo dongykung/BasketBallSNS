@@ -1,5 +1,6 @@
 package com.dkproject.presentation.ui.screen.home.profile
 
+import android.os.Parcelable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dkproject.domain.common.Resource
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.parcelize.Parcelize
 import javax.inject.Inject
 
 
@@ -65,3 +67,24 @@ class ProfileViewModel @Inject constructor(
 data class ProfileUiState(
     val userInfo: UserInfo
 )
+
+@Parcelize
+data class UserInfoUiModel(
+    val useruid:String,  //
+    val nickname: String, //
+    var profileImageUrl: String, //
+    val playPosition:List<String>, //
+    val playStyle:List<String>, //
+    val userSkill:String, //
+):Parcelable {
+    fun toDomainModel():UserInfo{
+        return UserInfo(
+            useruid=useruid,
+            nickname=nickname,
+            profileImageUrl=profileImageUrl,
+            playPosition=playPosition,
+            playStyle = playStyle,
+            userSkill=userSkill
+        )
+    }
+}
