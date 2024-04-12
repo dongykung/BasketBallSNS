@@ -3,6 +3,7 @@ package com.dkproject.presentation.ui.component.home
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -48,6 +49,7 @@ import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
@@ -61,25 +63,12 @@ import java.util.Locale
 @Composable
 fun GuestInfoSection(
     modifier: Modifier = Modifier,
-    guest: Guest,
+    guest: Guest
 ) {
+
+    Log.d("tests", guest.toString())
     val context = LocalContext.current
-    val cameraPositionState = rememberCameraPositionState() {
-        position = CameraPosition.fromLatLngZoom(
-            LatLng(
-                guest.lat,
-                guest.lng
-            ), 13f
-        )
-    }
-    val properties by remember {
-        mutableStateOf(
-            MapProperties(
-                isTrafficEnabled = true,
-                mapType = MapType.NORMAL
-            )
-        )
-    }
+
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(6.dp)
@@ -144,60 +133,26 @@ fun GuestInfoSection(
                 style = TextStyle(color = Color.Gray, fontSize = 18.sp)
             )
             Spacer(modifier = Modifier.weight(1f))
-            Surface(modifier=Modifier.clickable {
-                val clipManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("label",guest.detailAddress)
-                clipManager.setPrimaryClip(clip)
-            },
-                border = BorderStroke(1.dp,Color.Gray),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text(modifier=Modifier.padding(vertical = 3.dp, horizontal = 12.dp),
-                    text = "복사")
-            }
+
 
         }
 
         Spacer(modifier = Modifier.height(8.dp))
-        Card(modifier=Modifier.fillMaxWidth()
-            .pointerInput(Unit){
-                detectDragGestures { change, dragAmount ->
-                    cameraPositionState.move(CameraUpdateFactory.scrollBy(
-                        dragAmount.x,dragAmount.y
-                    ))
-                }
-            }
-        ) {
-            GoogleMap(
-                modifier = Modifier.fillMaxWidth().height(150.dp),
-                properties = properties,
-                cameraPositionState = cameraPositionState,
-            ) {
-                Marker(
-                    state = MarkerState(
-                        position = LatLng(
-                            guest.lat,
-                           guest.lng
-                        )
-                    ),
-                    title = "location"
-                )
 
-            }
-        }
+
     }
 }
 
 
-@Composable
-@Preview(showBackground = true)
-private fun GuestInfoPreview() {
-    BasketballSNSTheme {
-        GuestInfoSection(
-            guest = Guest(
-                "", "", "", emptyList(),
-                0, "", 0.0, 0.0, emptyList(), "", 0, 0
-            )
-        )
-    }
-}
+//@Composable
+//@Preview(showBackground = true)
+//private fun GuestInfoPreview() {
+//    BasketballSNSTheme {
+//        GuestInfoSection(
+//            guest = Guest(
+//                "", "", "", emptyList(),
+//                0, "", 0.0, 0.0, emptyList(), "", 0, 0
+//            )
+//        )
+//    }
+//}
