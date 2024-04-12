@@ -31,6 +31,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.dkproject.presentation.ui.activity.EditProfileActivity
 import com.dkproject.presentation.ui.activity.GuestDetailActivity
 import com.dkproject.presentation.ui.activity.ShopDetailActivity
 import com.dkproject.presentation.ui.activity.WriteJobActivity
@@ -43,6 +44,7 @@ import com.dkproject.presentation.ui.screen.home.home.HomeScreen
 import com.dkproject.presentation.ui.screen.home.home.HomeScreenViewModel
 import com.dkproject.presentation.ui.screen.home.home.guest.GuestScreen
 import com.dkproject.presentation.ui.screen.home.profile.ProfileScreen
+import com.dkproject.presentation.ui.screen.home.profile.ProfileViewModel
 import com.dkproject.presentation.ui.screen.home.shop.ShopHomeViewModel
 import com.dkproject.presentation.ui.screen.home.shop.ShopScreen
 
@@ -87,6 +89,7 @@ fun HomeNavigationScreen(
     val context = LocalContext.current
     val homeScreenViewModel:HomeScreenViewModel= viewModel()
     val shopHomeViewModel : ShopHomeViewModel = viewModel()
+    val profileViewModel: ProfileViewModel = viewModel()
     val writeShopActivityLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
         if(it.resultCode== Activity.RESULT_OK){
             shopHomeViewModel.updateload()
@@ -95,6 +98,11 @@ fun HomeNavigationScreen(
     val writeJobActivityLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
         if(it.resultCode==Activity.RESULT_OK){
             homeScreenViewModel.updateData()
+        }
+    }
+    val EditProfileActivityLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
+        if(it.resultCode==Activity.RESULT_OK){
+            profileViewModel.load()
         }
     }
 
@@ -131,7 +139,11 @@ fun HomeNavigationScreen(
                 })
         }
         composable(route = HomeRoute.SETTING.route) {
-            ProfileScreen()
+            ProfileScreen(profileViewModel){data->
+                EditProfileActivityLauncher.launch(Intent(context,EditProfileActivity::class.java).apply {
+                    putExtra("UserInfo",data)
+                })
+            }
         }
     }
 }
