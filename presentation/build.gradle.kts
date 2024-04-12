@@ -7,6 +7,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("com.google.gms.google-services")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+    id ("kotlin-parcelize")
 }
 
 android {
@@ -97,6 +98,10 @@ dependencies {
 
     //threetenabp - java - time
     implementation("com.jakewharton.threetenabp:threetenabp:1.4.7")
+
+    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
 
     //googlemap
     implementation("com.google.maps.android:maps-compose:4.3.3")
