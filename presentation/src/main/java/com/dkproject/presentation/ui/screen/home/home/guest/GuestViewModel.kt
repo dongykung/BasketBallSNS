@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.dkproject.domain.common.Resource
 import com.dkproject.domain.model.UserInfo
 import com.dkproject.domain.model.home.Guest
+import com.dkproject.domain.usecase.home.ApplyGuestUseCase
 import com.dkproject.domain.usecase.home.GetGuestItemUseCase
 import com.dkproject.domain.usecase.user.GetUserInfoUseCase
 import com.dkproject.presentation.ui.component.showToastMessage
@@ -31,45 +32,49 @@ import javax.inject.Inject
 class GuestViewModel @Inject constructor(
     private val getGuestItemUseCase: GetGuestItemUseCase,
     private val getUserInfoUseCase: GetUserInfoUseCase,
+    private val applyGuestUseCase: ApplyGuestUseCase
 ) :ViewModel(){
     companion object{
         const val TAG="GuestViewModel"
     }
     private val _state = MutableStateFlow(GuestItemState(Guest("","","", emptyList(),
-        0,"",0.0,0.0, emptyList(),"",0,0
-    ),UserInfo("","","", emptyList(), emptyList(),"")))
+        0,"",37.3860147,126.9774774, emptyList(),"",0,0
+    ),UserInfo("","","", emptyList(), emptyList(),""), emptyList()
+    ))
     val state :StateFlow<GuestItemState> = _state.asStateFlow()
     var loading by mutableStateOf(false)
     var error by mutableStateOf(false)
-
+    var getuser by mutableStateOf(false)
 
     fun getGuestItem(uid:String) {
         viewModelScope.launch {
-            getGuestItemUseCase(uid).collect { result->
-              when(result){
-                  is Resource.Success->{
-                      Log.d(TAG, "Success")
-                      loading=false
-                      error=false
-                      if(result.data!=null) {
-                          _state.update { it.copy(guest = result.data!!) }
-                          getWriterInfo(result.data?.writeUid!!)
-                      }else{
-                          error=true
-                      }
-                  }
-                  is Resource.Loading->{
-                      Log.d(TAG, "Loading")
-                      loading = true
-                      error=false
-                  }
-                  is Resource.Error->{
-                      Log.d(TAG, "Error")
-                      loading=false
-                      error=true
-                  }
-              }
+            getGuestItemUseCase(uid).collect { guest ->
+                Log.d(TAG, guest.toString())
+                _state.update { it.copy(guest = guest) }
+                if (!getuser) {
+                    getWriterInfo(guest.writeUid)
+                    getuser=true
+                }
+                if(guest.guestsUid.isNotEmpty()){
+                    updateApplyGuestsInfo(guest.guestsUid)
+                }
             }
+        }
+    }
+
+    fun updateApplyGuestsInfo(list : List<String>){
+        viewModelScope.launch {
+            val guestsList : MutableList<UserInfo> = mutableListOf()
+            list.forEach{
+                getUserInfoUseCase(it).collect{userInfo->
+                    when(userInfo){
+                        is Resource.Error -> {}
+                        is Resource.Loading -> {}
+                        is Resource.Success -> {guestsList.add(userInfo.data!!)}
+                    }
+                }
+            }
+            _state.update { it.copy(guestsInfo = guestsList) }
         }
     }
 
@@ -93,10 +98,27 @@ class GuestViewModel @Inject constructor(
         }
     }
 
+    fun applyGuest(context: Context){
+        viewModelScope.launch {
+            applyGuestUseCase(state.value.guest.uid,state.value.guest.guestsUid+Constants.myToken).collect{result->
+                when(result){
+                    is Resource.Error -> {
+                        showToastMessage(context,result.message.toString())
+                    }
+                    is Resource.Loading ->{}
+                    is Resource.Success -> {
+                        showToastMessage(context,"신청이 완료되었습니다")
+                    }
+                }
+            }
+        }
+    }
+
 }
 
 data class GuestItemState(
     val guest:Guest,
-    val userInfo:UserInfo
+    val userInfo:UserInfo,
+    val guestsInfo:List<UserInfo>
 )
 
