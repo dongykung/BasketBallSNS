@@ -58,7 +58,7 @@ class ChatRepositoryImpl @Inject constructor(
         val messageDTO = ChatMessageDTO(
             chatId = message.chatId,
             message = message.message,
-            time = convertMillsSecond(),
+            time = System.currentTimeMillis(),
             userUid = message.userUid
         )
         try {
