@@ -43,6 +43,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
@@ -181,17 +182,21 @@ fun SearchSection(
         mutableStateOf("")
     }
     Column(
-        modifier = modifier.background(Color.White, RoundedCornerShape(8.dp))
+        modifier = modifier.background(Color.White,RoundedCornerShape(18.dp))
     ) {
         OutlinedTextField(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(4.dp).
+                clip(RoundedCornerShape(18.dp)),
             value = text, onValueChange = {
                 text = it
                 ontextChange(it)
             },
-            colors = TextFieldDefaults.colors(unfocusedContainerColor = Color.White,
-                focusedContainerColor = Color.White,
+            colors = TextFieldDefaults.colors(unfocusedContainerColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedContainerColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent
                 ),
             leadingIcon = {
                           Icon(imageVector = Icons.Outlined.Search, contentDescription = "")
@@ -302,7 +307,7 @@ private fun getLocation(
     }
 }
 
-private suspend fun CameraPositionState.OnLocation(location: com.google.android.gms.maps.model.LatLng) {
+ private suspend fun CameraPositionState.OnLocation(location: com.google.android.gms.maps.model.LatLng) {
     this.animate(
         update = CameraUpdateFactory.newLatLngZoom(
             location, 13f
