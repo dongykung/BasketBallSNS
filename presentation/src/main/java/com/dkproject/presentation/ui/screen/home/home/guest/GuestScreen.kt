@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -25,6 +26,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
@@ -45,8 +47,14 @@ import com.dkproject.presentation.R
 import com.dkproject.presentation.ui.activity.ChatActivity
 import com.dkproject.presentation.ui.activity.UserProfileActivity
 import com.dkproject.presentation.ui.component.HomeTopAppBar
+import com.dkproject.presentation.ui.component.home.GuestGoogleMapSection
 import com.dkproject.presentation.ui.component.home.GuestInfoSection
 import com.dkproject.presentation.ui.component.home.WriterInfoSection
+import com.dkproject.presentation.ui.component.section.ApplyGuestsSection
+import com.dkproject.presentation.util.Constants
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.rememberCameraPositionState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,6 +63,7 @@ fun GuestScreen(
     viewModel: GuestViewModel,
     onBackClick: () -> Unit
 ) {
+    Log.d("GuestScreen", "GuestScreen: ")
     val context= LocalContext.current
     val state = viewModel.state.collectAsState().value
     val loading = viewModel.loading
@@ -74,10 +83,12 @@ fun GuestScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 12.dp)){
                 Button(modifier=Modifier.weight(1f),
+                    enabled = state.userInfo.useruid!=Constants.myToken&&
+                            !state.guest.guestsUid.contains(Constants.myToken),
                     onClick = {
-
+                        viewModel.applyGuest(context)
                     }) {
-                    Text(text = "신청하기")
+                    Text(text = if(state.guest.guestsUid.contains(Constants.myToken))"신청완료" else "신청하기")
                 }
                 Spacer(modifier = Modifier.width(10.dp))
                 Button(modifier=Modifier.weight(1f),
@@ -112,9 +123,26 @@ fun GuestScreen(
                         })
                     }
                     HorizontalDivider(modifier=Modifier.padding(horizontal = 16.dp))
+
                     GuestInfoSection(modifier= Modifier
                         .padding(top = 16.dp)
-                        .fillMaxWidth(),guest = state.guest)
+                        .fillMaxWidth(),guest = state.guest,
+                        )
+                    val cameraPositionState = rememberCameraPositionState() {
+                        position = CameraPosition.fromLatLngZoom(
+                            LatLng(
+                                state.guest.lat,
+                                state.guest.lng,
+                            ), 13f
+                        )
+                    }
+                    GuestGoogleMapSection(lat = state.guest.lat, lng = state.guest.lng,cameraPositionState)
+                    Spacer(modifier = Modifier.height(22.dp))
+                    ApplyGuestsSection(itemList = state.guestsInfo){guestUid->
+                        context.startActivity(Intent(context, UserProfileActivity::class.java).apply {
+                            putExtra("userUid",guestUid)
+                        })
+                    }
                 }
             }
         }
