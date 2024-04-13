@@ -133,9 +133,10 @@ fun HomeNavigationScreen(
                     writeShopActivityLauncher.launch(Intent(context,WriteShopActivity::class.java))
             },
                 clickItem = {uid->
-                    context.startActivity(Intent(context,ShopDetailActivity::class.java).apply {
+                    writeShopActivityLauncher.launch(Intent(context,ShopDetailActivity::class.java).apply {
                         putExtra("uid",uid)
                     })
+
                 })
         }
         composable(route = HomeRoute.SETTING.route) {
