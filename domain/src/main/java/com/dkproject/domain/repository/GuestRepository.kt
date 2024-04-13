@@ -15,4 +15,6 @@ interface GuestRepository {
     suspend fun getGuestItem(uid:String): Flow<Guest>
 
     suspend fun applyGuest(guestItemUid:String,userlist:List<String>) :Resource<Boolean>
+
+    suspend fun applyCancel(guestItemUid:String,updateList:List<String>) :Resource<Boolean>
 }

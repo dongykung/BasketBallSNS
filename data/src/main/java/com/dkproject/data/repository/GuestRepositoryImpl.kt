@@ -102,5 +102,17 @@ class GuestRepositoryImpl @Inject constructor(private val firestore: FirebaseFir
             Resource.Error(e.message.toString())
         }
     }
+
+    override suspend fun applyCancel(
+        guestItemUid: String,
+        updateList: List<String>
+    ): Resource<Boolean> {
+        return try {
+            firestore.collection("Guest").document(guestItemUid).update("guestsUid",updateList).await()
+            Resource.Success(true)
+        }catch (e:Exception){
+            Resource.Error(e.message.toString())
+        }
+    }
 }
 
