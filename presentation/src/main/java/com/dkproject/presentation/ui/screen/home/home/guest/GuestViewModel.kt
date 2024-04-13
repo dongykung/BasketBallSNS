@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.dkproject.domain.common.Resource
 import com.dkproject.domain.model.UserInfo
 import com.dkproject.domain.model.home.Guest
+import com.dkproject.domain.usecase.home.ApplyCancelUseCase
 import com.dkproject.domain.usecase.home.ApplyGuestUseCase
 import com.dkproject.domain.usecase.home.GetGuestItemUseCase
 import com.dkproject.domain.usecase.user.GetUserInfoUseCase
@@ -32,7 +33,8 @@ import javax.inject.Inject
 class GuestViewModel @Inject constructor(
     private val getGuestItemUseCase: GetGuestItemUseCase,
     private val getUserInfoUseCase: GetUserInfoUseCase,
-    private val applyGuestUseCase: ApplyGuestUseCase
+    private val applyGuestUseCase: ApplyGuestUseCase,
+    private val applyCancelUseCase: ApplyCancelUseCase
 ) :ViewModel(){
     companion object{
         const val TAG="GuestViewModel"
@@ -45,6 +47,7 @@ class GuestViewModel @Inject constructor(
     var loading by mutableStateOf(false)
     var error by mutableStateOf(false)
     var getuser by mutableStateOf(false)
+    var applystatus by mutableStateOf(state.value.guest.guestsUid.contains(Constants.myToken))
 
     fun getGuestItem(uid:String) {
         viewModelScope.launch {
@@ -55,9 +58,9 @@ class GuestViewModel @Inject constructor(
                     getWriterInfo(guest.writeUid)
                     getuser=true
                 }
-                if(guest.guestsUid.isNotEmpty()){
+
                     updateApplyGuestsInfo(guest.guestsUid)
-                }
+
             }
         }
     }
@@ -74,6 +77,7 @@ class GuestViewModel @Inject constructor(
                     }
                 }
             }
+            Log.d(TAG, "updateApplyGuestsInfo: ")
             _state.update { it.copy(guestsInfo = guestsList) }
         }
     }
@@ -108,8 +112,21 @@ class GuestViewModel @Inject constructor(
                     is Resource.Loading ->{}
                     is Resource.Success -> {
                         showToastMessage(context,"신청이 완료되었습니다")
+                        applystatus=true
                     }
                 }
+            }
+        }
+    }
+
+    fun applyCancel(context: Context){
+        viewModelScope.launch {
+            Log.d(TAG, "applyCancel: ")
+            val list = if(state.value.guest.guestsUid.contains(Constants.myToken))
+                (state.value.guest.guestsUid - Constants.myToken) else state.value.guest.guestsUid
+            applyCancelUseCase(state.value.guest.uid,list).collect{
+                applystatus=false
+                showToastMessage(context,"신청이 취소되었습니다")
             }
         }
     }

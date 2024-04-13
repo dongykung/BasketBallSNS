@@ -68,6 +68,7 @@ fun GuestScreen(
     val state = viewModel.state.collectAsState().value
     val loading = viewModel.loading
     val error = viewModel.error
+    val applyStatus = viewModel.applystatus
     Scaffold(topBar = {
         HomeTopAppBar(
             title = state.guest.title,
@@ -83,12 +84,13 @@ fun GuestScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 12.dp)){
                 Button(modifier=Modifier.weight(1f),
-                    enabled = state.userInfo.useruid!=Constants.myToken&&
-                            !state.guest.guestsUid.contains(Constants.myToken),
+                    enabled = state.userInfo.useruid!=Constants.myToken,
                     onClick = {
+                        if(!applyStatus)
                         viewModel.applyGuest(context)
+                        else viewModel.applyCancel(context)
                     }) {
-                    Text(text = if(state.guest.guestsUid.contains(Constants.myToken))"신청완료" else "신청하기")
+                    Text(text = if(state.guest.guestsUid.contains(Constants.myToken))"신청취소" else "신청하기")
                 }
                 Spacer(modifier = Modifier.width(10.dp))
                 Button(modifier=Modifier.weight(1f),
