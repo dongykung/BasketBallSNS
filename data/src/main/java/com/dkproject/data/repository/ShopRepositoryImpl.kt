@@ -29,4 +29,13 @@ class ShopRepositoryImpl @Inject constructor(
         }
 
     }
+
+    override suspend fun deleteArticle(uid: String):Boolean {
+        return try {
+            firestore.collection("Article").document(uid).delete().await()
+            return true
+        }catch (e:Exception){
+            return false
+        }
+    }
 }
