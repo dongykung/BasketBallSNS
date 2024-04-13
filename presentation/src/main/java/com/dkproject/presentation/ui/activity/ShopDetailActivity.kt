@@ -1,5 +1,7 @@
 package com.dkproject.presentation.ui.activity
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -23,7 +25,10 @@ class ShopDetailActivity:ComponentActivity() {
                 Log.d("uid", value)
                 val viewModel: ShopDetailViewModel = viewModel()
                 viewModel.getArticle(value)
-                ShopDetailScreen(viewModel = viewModel, shopUid = value) {
+                ShopDetailScreen(viewModel = viewModel, shopUid = value, onBackClick = {
+                    finish()
+                }) {
+                    setResult(Activity.RESULT_OK, Intent())
                     finish()
                 }
             }

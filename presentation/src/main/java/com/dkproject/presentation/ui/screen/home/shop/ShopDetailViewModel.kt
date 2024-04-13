@@ -9,9 +9,11 @@ import androidx.lifecycle.viewModelScope
 import com.dkproject.domain.common.Resource
 import com.dkproject.domain.model.UserInfo
 import com.dkproject.domain.model.shop.Articles
+import com.dkproject.domain.usecase.shop.DeleteArticleUseCase
 import com.dkproject.domain.usecase.shop.GetArticleItemUseCase
 import com.dkproject.domain.usecase.user.GetUserInfoUseCase
 import com.dkproject.presentation.ui.screen.home.home.guest.GuestViewModel
+import com.dkproject.presentation.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,6 +27,7 @@ import javax.inject.Inject
 class ShopDetailViewModel @Inject constructor(
     private val getArticleItemUseCase: GetArticleItemUseCase,
     private val getUserInfoUseCase: GetUserInfoUseCase,
+    private val deleteArticleUseCase: DeleteArticleUseCase
 ) : ViewModel() {
     companion object{
         const val TAG="ShopDetailViewModel"
@@ -38,6 +41,7 @@ class ShopDetailViewModel @Inject constructor(
     val state : StateFlow<ShopDetailUiState> = _state.asStateFlow()
     var loading by mutableStateOf(false)
     var error by mutableStateOf(false)
+    var myshop by mutableStateOf(false)
     fun updateArticle(articles: Articles){
         _state.update { it.copy(articleInfo = articles) }
     }
@@ -61,6 +65,7 @@ class ShopDetailViewModel @Inject constructor(
                         Log.d(TAG, it.data.toString())
                         loading=false
                         error=false
+                        myshop = (it.data?.writerUid==Constants.myToken)
                         updateArticle(it.data!!)
                         getWriterInfo(it.data?.writerUid ?: "")
                     }
@@ -85,6 +90,16 @@ class ShopDetailViewModel @Inject constructor(
                         Log.d(GuestViewModel.TAG, result.toString())
                     }
                 }
+            }
+        }
+    }
+
+    fun deleteArticle(deleteCompleted:()->Unit){
+        viewModelScope.launch {
+            deleteArticleUseCase(state.value.articleInfo.uid).onSuccess {
+                deleteCompleted()
+            }.onFailure {
+
             }
         }
     }

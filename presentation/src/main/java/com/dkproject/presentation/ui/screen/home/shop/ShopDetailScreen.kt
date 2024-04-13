@@ -37,12 +37,14 @@ import com.dkproject.presentation.ui.screen.home.home.guest.LoadingScreen
 fun ShopDetailScreen(
     viewModel: ShopDetailViewModel,
     shopUid: String,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onDelete:()->Unit,
 ) {
     val context = LocalContext.current
     val state = viewModel.state.collectAsState().value
     val loading = viewModel.loading
     val error = viewModel.error
+    val myshop = viewModel.myshop
     Scaffold(topBar = {
         HomeTopAppBar(
             title = state.articleInfo.name,
@@ -51,12 +53,16 @@ fun ShopDetailScreen(
         )
     },
         bottomBar = {
-            Button(modifier=Modifier.padding(horizontal = 22.dp).fillMaxWidth(),onClick = {
-                context.startActivity(Intent(context, ChatActivity::class.java).apply {
-                    putExtra("UserUid", state.articleInfo.writerUid)
-                })
+            Button(modifier = Modifier
+                .padding(horizontal = 22.dp)
+                .fillMaxWidth(), onClick = {
+                if (myshop) viewModel.deleteArticle(onDelete) else {
+                    context.startActivity(Intent(context, ChatActivity::class.java).apply {
+                        putExtra("UserUid", state.articleInfo.writerUid)
+                    })
+                }
             }) {
-                Text(text = "채팅하기")
+                Text(text = if (myshop) "판매완료" else "채팅하기")
             }
         }) { innerPadding ->
         Box(modifier = Modifier.fillMaxSize()) {
@@ -84,11 +90,16 @@ fun ShopDetailScreen(
 
                     //writer Info Section
                     WriterInfoSection(
-                        modifier=Modifier.padding(horizontal = 16.dp),
-                        user = state.userInfo){uid->
-                        context.startActivity(Intent(context, UserProfileActivity::class.java).apply {
-                            putExtra("userUid",uid)
-                        })
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        user = state.userInfo
+                    ) { uid ->
+                        context.startActivity(
+                            Intent(
+                                context,
+                                UserProfileActivity::class.java
+                            ).apply {
+                                putExtra("userUid", uid)
+                            })
                     }
                     Spacer(modifier = Modifier.height(10.dp))
 
@@ -105,7 +116,7 @@ fun ShopDetailScreen(
 
                     Spacer(modifier = Modifier.height(18.dp))
                     MapSection(
-                        modifier=Modifier.padding(horizontal = 16.dp),
+                        modifier = Modifier.padding(horizontal = 16.dp),
                         lat = state.articleInfo.lat,
                         lng = state.articleInfo.lng,
                         context = context,
