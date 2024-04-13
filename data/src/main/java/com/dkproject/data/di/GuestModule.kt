@@ -4,6 +4,7 @@ import com.dkproject.data.repository.GuestRepositoryImpl
 import com.dkproject.data.repository.UserRepositoryImpl
 import com.dkproject.domain.repository.GuestRepository
 import com.dkproject.domain.repository.UserRepository
+import com.dkproject.domain.usecase.home.ApplyCancelUseCase
 import com.dkproject.domain.usecase.home.ApplyGuestUseCase
 import com.dkproject.domain.usecase.home.GetGuestItemUseCase
 import com.dkproject.domain.usecase.home.GetGuestUseCase
@@ -68,5 +69,11 @@ object GuestModule2{
     @Singleton
     fun provideApplyGuestUseCase(guestRepository: GuestRepository):ApplyGuestUseCase{
         return ApplyGuestUseCase(guestRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideApplyCnacelGuestUseCase(guestRepository: GuestRepository):ApplyCancelUseCase{
+        return ApplyCancelUseCase(guestRepository)
     }
 }
