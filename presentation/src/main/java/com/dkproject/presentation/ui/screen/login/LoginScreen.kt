@@ -15,10 +15,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -77,7 +79,10 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(100.dp))
-            Text(text = "BasketBall")
+            Text(text = "BasketBall",
+                style = MaterialTheme.typography.headlineMedium,
+
+            )
             Spacer(modifier = Modifier.weight(3f))
             Column(modifier = Modifier.weight(1f)) {
                 if (autoLogin) {
