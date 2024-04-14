@@ -145,6 +145,7 @@ fun GuestScreen(
                             putExtra("userUid",guestUid)
                         })
                     }
+                    Spacer(modifier = Modifier.height(15.dp))
                 }
             }
         }
