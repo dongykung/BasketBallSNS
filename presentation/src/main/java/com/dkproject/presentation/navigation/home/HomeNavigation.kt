@@ -112,6 +112,8 @@ fun HomeNavigationScreen(
         startDestination = HomeRoute.HOME.route
     ) {
         composable(route = HomeRoute.HOME.route) {
+            homeScreenViewModel.updateReset()
+            homeScreenViewModel.load()
             HomeScreen(viewModel = homeScreenViewModel,
                 onWriteClick = {
                 writeJobActivityLauncher.launch(Intent(context,WriteJobActivity::class.java))

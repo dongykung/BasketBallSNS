@@ -84,7 +84,7 @@ fun NicknameSection(
     Text(
         modifier = Modifier.padding(12.dp),
         text = stringResource(id = R.string.inputNickname),
-        style = MaterialTheme.typography.headlineMedium
+        style = MaterialTheme.typography.headlineLarge
     )
 
     Spacer(modifier = Modifier.height(100.dp))

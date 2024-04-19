@@ -32,9 +32,7 @@ class HomeScreenViewModel @Inject constructor(
     private val _state = MutableStateFlow(HomeUiState("모두보기", 0, false, emptyFlow()))
     val state: StateFlow<HomeUiState> = _state
 
-    init {
-        load()
-    }
+
 
     fun load() {
         viewModelScope.launch {
@@ -46,6 +44,10 @@ class HomeScreenViewModel @Inject constructor(
                 }.cachedIn(viewModelScope)
             _state.update { it.copy(itemList = homeModelFlow) }
         }
+    }
+
+    fun updateReset(){
+        _state.update { it.copy("모두보기", 0, false, emptyFlow()) }
     }
 
     fun nearload() {

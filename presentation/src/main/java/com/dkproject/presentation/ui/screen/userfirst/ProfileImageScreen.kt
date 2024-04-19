@@ -64,7 +64,7 @@ fun ProfileImageScreen(
         Text(
             modifier = Modifier.padding(12.dp),
             text = stringResource(id = R.string.explainprofile),
-            style = MaterialTheme.typography.headlineMedium
+            style = MaterialTheme.typography.headlineLarge
         )
         Spacer(modifier = Modifier.height(40.dp))
         //user profileImageView

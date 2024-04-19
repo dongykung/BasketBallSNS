@@ -11,7 +11,7 @@ class CheckNicknameUseCaseImpl @Inject constructor(
 ) : CheckNicknameUseCase {
     override suspend fun invoke(nickname: String): Boolean {
         val document =
-            firestore.collection("users").whereEqualTo("NickName", nickname).get().await()
+            firestore.collection("users").whereEqualTo("nickname", nickname).get().await()
 //        Log.e("equal test", document.documents.toString())
 //        Log.e("equal test", document.documents.size.toString())
 //        Log.e("equal test", document.toString())

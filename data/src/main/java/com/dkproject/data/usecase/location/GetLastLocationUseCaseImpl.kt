@@ -34,8 +34,10 @@ class GetLastLocationUseCaseImpl @Inject constructor(
 
         locationClient.lastLocation.addOnSuccessListener {
             if(it!=null) {
-                data.Lat = it.latitude ?: 37.555134
-                data.Lng = it.longitude ?: 126.936893
+//                data.Lat = it.latitude ?: 37.555134
+//                data.Lng = it.longitude ?: 126.936893
+                data.Lat = 37.555134
+                data.Lng = 126.936893
             }
         }.addOnFailureListener {
             data.Lat = 37.555134

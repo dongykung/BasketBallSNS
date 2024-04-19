@@ -45,7 +45,7 @@ fun PlayPositionScreen(
         Text(
             modifier = Modifier.padding(12.dp),
             text = stringResource(id = R.string.userposition),
-            style = MaterialTheme.typography.headlineMedium
+            style = MaterialTheme.typography.headlineLarge
         )
         Spacer(modifier = Modifier.height(40.dp))
 
@@ -60,7 +60,7 @@ fun PlayPositionScreen(
         Text(
             modifier = Modifier.padding(12.dp),
             text = stringResource(id = R.string.userplaystyle),
-            style = MaterialTheme.typography.headlineMedium
+            style = MaterialTheme.typography.headlineLarge
         )
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -75,7 +75,7 @@ fun PlayPositionScreen(
         Text(
             modifier = Modifier.padding(12.dp),
             text = stringResource(id = R.string.userplaystyle),
-            style = MaterialTheme.typography.headlineMedium
+            style = MaterialTheme.typography.headlineLarge
         )
         Spacer(modifier = Modifier.height(20.dp))
         playSkillFlow(
