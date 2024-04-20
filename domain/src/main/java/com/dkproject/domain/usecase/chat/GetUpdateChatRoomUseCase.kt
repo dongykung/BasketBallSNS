@@ -7,6 +7,7 @@ class GetUpdateChatRoomUseCase(
     private val chatRoomRepository: ChatRoomRepository
 ) {
     operator suspend fun invoke(myUid:String,chatRoom: ChatRoom) : Result<String> = runCatching{
+        println(chatRoom.toString()+"system")
         chatRoomRepository.UploadChatRoom(myUid,chatRoom)
     }
 }
