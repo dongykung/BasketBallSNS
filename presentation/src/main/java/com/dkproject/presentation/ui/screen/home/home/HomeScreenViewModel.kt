@@ -1,5 +1,8 @@
 package com.dkproject.presentation.ui.screen.home.home
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -31,8 +34,11 @@ class HomeScreenViewModel @Inject constructor(
 ) : ViewModel() {
     private val _state = MutableStateFlow(HomeUiState("모두보기", 0, false, emptyFlow()))
     val state: StateFlow<HomeUiState> = _state
+    var dateText by mutableStateOf("날짜")
 
-
+    fun updatedateText(text:String){
+        dateText = text
+    }
 
     fun load() {
         viewModelScope.launch {
@@ -48,6 +54,8 @@ class HomeScreenViewModel @Inject constructor(
 
     fun updateReset(){
         _state.update { it.copy("모두보기", 0, false, emptyFlow()) }
+        dateText="날짜"
+        load()
     }
 
     fun nearload() {

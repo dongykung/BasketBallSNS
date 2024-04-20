@@ -9,9 +9,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,13 +37,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.dkproject.presentation.R
 import com.dkproject.presentation.model.ShopUiModel
 import com.dkproject.presentation.ui.component.HomeFloatingButton
 import com.dkproject.presentation.ui.component.HomeTopAppBar
 import com.dkproject.presentation.ui.component.PullToRefreshLazyColumn
 import com.dkproject.presentation.ui.component.home.CustomDateBottomSheet
+import com.dkproject.presentation.ui.component.refreshbutton
 import com.dkproject.presentation.ui.component.shop.CustomBottomSheet
 import com.dkproject.presentation.ui.component.shop.DivisionChip
 import com.dkproject.presentation.ui.screen.home.shop.ShopCard
@@ -54,13 +57,13 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
     viewModel: HomeScreenViewModel,
-    guestItemClick:(String)->Unit,
+    guestItemClick: (String) -> Unit,
     onWriteClick: () -> Unit
 ) {
     val state = viewModel.state.collectAsState().value
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val items: LazyPagingItems<GuestUiModel> = state.itemList.collectAsLazyPagingItems()
-
+    var dateText = viewModel.dateText
     Scaffold(modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             HomeTopAppBar(
@@ -74,7 +77,12 @@ fun HomeScreen(
             }
         }) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
-            HomeDivisionSection(positionValue = state.position,
+            HomeDivisionSection(
+                dateText = dateText,
+                dateTextChange = {
+                    viewModel.updatedateText(it)
+                },
+                positionValue = state.position,
                 distance = state.distacne,
                 onPositionChange = { position ->
                     viewModel.updatePosition(position)
@@ -83,9 +91,12 @@ fun HomeScreen(
                 },
                 dateChange = { date ->
                     viewModel.updateDate(date)
+                },
+                refresh = {
+                    viewModel.updateReset()
                 })
             HomeItemList(homeItemList = items,
-                guestItemClick={
+                guestItemClick = {
                     guestItemClick(it)
                 })
         }
@@ -95,7 +106,7 @@ fun HomeScreen(
 @Composable
 private fun HomeItemList(
     homeItemList: LazyPagingItems<GuestUiModel>,
-    guestItemClick:(String)->Unit,
+    guestItemClick: (String) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -109,9 +120,9 @@ private fun HomeItemList(
             }
         ) { index ->
             homeItemList[index]?.run {
-                HomeItemCard(modifier=Modifier.clickable {
+                HomeItemCard(modifier = Modifier.clickable {
                     guestItemClick(this.uid)
-                },item = this)
+                }, item = this)
                 HorizontalDivider(modifier = Modifier.padding(vertical = 6.dp, horizontal = 12.dp))
             }
         }
@@ -122,26 +133,27 @@ private fun HomeItemList(
 @Composable
 fun HomeDivisionSection(
     modifier: Modifier = Modifier,
+    dateText: String,
+    dateTextChange: (String) -> Unit,
     positionValue: String,
     dateChange: (Long) -> Unit,
     distance: Boolean,
     onPositionChange: (String) -> Unit,
     distanceChange: (Boolean) -> Unit,
+    refresh: () -> Unit,
 ) {
     val context = LocalContext.current
     var isPositionBottomSheetVisible by rememberSaveable { mutableStateOf(false) }
     val position = listOf("모두보기", "포인트 가드", "슈팅 가드", "파워 포워드", "스몰 포워드", "센터")
 
-    var datetext by remember {
-        mutableStateOf("날짜")
-    }
+
     var isDateBottomSheetVisible by rememberSaveable { mutableStateOf(false) }
     if (isDateBottomSheetVisible) {
         CustomDateBottomSheet(modifier = Modifier.fillMaxHeight(0.7f),
             visible = isDateBottomSheetVisible,
             dismiss = { isDateBottomSheetVisible = false }) { selectDayMillis ->
             dateChange(selectDayMillis)
-            datetext = converMillisToMonthday(selectDayMillis)
+            dateTextChange(converMillisToMonthday(selectDayMillis))
         }
     }
     if (isPositionBottomSheetVisible) {
@@ -183,6 +195,10 @@ fun HomeDivisionSection(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
+        Spacer(modifier = Modifier.width(8.dp))
+        refreshbutton(modifier = Modifier.size(50.dp)) {
+            refresh()
+        }
         DivisionChip(
             modifier = Modifier.padding(start = 12.dp),
             arrow = true,
@@ -191,7 +207,7 @@ fun HomeDivisionSection(
                 isPositionBottomSheetVisible = true
             })
 
-        DivisionChip(value = datetext, onClick = {
+        DivisionChip(value = dateText, onClick = {
             isDateBottomSheetVisible = true
         })
         DivisionChip(value = "내 주변 보기", arrow = false, distance = distance, onClick = {
