@@ -21,9 +21,14 @@ class ChatRoomRepositoryImpl @Inject constructor(
     override suspend fun UploadChatRoom(myUid:String, chatRoom: ChatRoom) : String {
         try {
             var chatRoomUid = ""
+            val otheruid = chatRoom.otherUserUid
+            Log.e("first gate", chatRoom.toString())
             val DatabaseRef =  firebaseDatabase.reference.child("ChatRoom").child(myUid).child(chatRoom.otherUserUid)
             DatabaseRef.get().addOnSuccessListener {
+                chatRoom.otherUserUid=otheruid
+                Log.e("set prev info", chatRoom.toString())
                 if(it.value==null){
+                    Log.e("setchat", chatRoom.toString())
                     DatabaseRef.setValue(chatRoom)
                     chatRoomUid = chatRoom.chatRoomId
                 }else{
@@ -38,12 +43,17 @@ class ChatRoomRepositoryImpl @Inject constructor(
             }.await()
 
             val OtherDatabaseRef=firebaseDatabase.reference.child("ChatRoom").child(chatRoom.otherUserUid).child(myUid)
-            val otherChatRoomdata = chatRoom.apply {
-                otherUserUid = myUid
-            }
+
             OtherDatabaseRef.get().addOnSuccessListener {
                 if(it.value==null){
-                    OtherDatabaseRef.setValue(otherChatRoomdata)
+                    val item = hashMapOf(
+                        "chatRoomId" to chatRoom.chatRoomId,
+                        "lastMessage" to chatRoom.lastMessage,
+                        "lastMessageTime" to chatRoom.lastMessageTime,
+                        "otherUserUid" to myUid
+                    )
+                    Log.e("otherset", item.toString())
+                    OtherDatabaseRef.setValue(item)
                 }else{
                     val update = mapOf(
                         "lastMessage" to chatRoom.lastMessage,

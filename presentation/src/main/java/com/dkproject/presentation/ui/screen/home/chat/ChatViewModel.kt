@@ -103,6 +103,7 @@ class ChatViewModel @Inject constructor(
             val myUid = getTokenUseCase()
             val chatRoomUid = UUID.randomUUID().toString()
             if (myUid != null) {
+                Log.e("sendMessage", otherUid)
                 val data = ChatRoom(
                     chatRoomId = chatRoomUid,
                     lastMessage = msg,
@@ -125,6 +126,8 @@ class ChatViewModel @Inject constructor(
                             }
                         }
                     }
+                }.onFailure {
+                    Log.e("sendMessage", "fail")
                 }
             }
         }

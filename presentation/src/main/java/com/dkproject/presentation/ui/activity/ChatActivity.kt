@@ -1,6 +1,7 @@
 package com.dkproject.presentation.ui.activity
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -25,7 +26,8 @@ class ChatActivity:ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             BasketballSNSTheme {
-                val chatUserUid = intent.getStringExtra("UserUid") ?: ""
+                val chatUserUid = intent.getStringExtra("UserUid") ?: "test"
+                Log.e("ChatActivity", chatUserUid)
                 val chatViewModel:ChatViewModel = viewModel()
                 chatViewModel.load(chatUserUid)
                 chatViewModel.getChatUserInfo(chatUserUid)

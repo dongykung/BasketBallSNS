@@ -33,9 +33,9 @@ import com.dkproject.presentation.ui.screen.home.home.GuestUiModel
 fun ChatRoomScreen(viewModel: ChatRoomViewModel= hiltViewModel()){
     val state = viewModel.state.collectAsState().value
     val context = LocalContext.current
-    ChatRoomScreen(chatRoomList = state, chatRoomClick = {
+    ChatRoomScreen(chatRoomList = state, chatRoomClick = {uid->
         context.startActivity(Intent(context,ChatActivity::class.java).apply {
-            putExtra("UserUid",it)
+            putExtra("UserUid",uid)
         })
     })
 }

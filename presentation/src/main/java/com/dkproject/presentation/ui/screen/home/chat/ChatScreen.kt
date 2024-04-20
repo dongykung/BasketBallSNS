@@ -138,16 +138,16 @@ fun ChatScreen(
                 state.userInfo.profileImageUrl,
                 state.userInfo.nickname,
                 lazyColumnState,
-                profileClick = {uid->
-                    context.startActivity(Intent(context,UserProfileActivity::class.java).apply {
-                        putExtra("userUid",uid)
+                profileClick = { uid ->
+                    context.startActivity(Intent(context, UserProfileActivity::class.java).apply {
+                        putExtra("userUid", uid)
                     })
                 },
             )
             LaunchedEffect(key1 = state.messages) {
                 coroutine.launch {
                     if(state.messages.isNotEmpty())
-                    lazyColumnState.scrollToItem(0)
+                        lazyColumnState.scrollToItem(0)
                 }
             }
 
@@ -161,7 +161,7 @@ fun ChatScreen(
                 TextField(
                     modifier = Modifier
                         .weight(1f),
-                    value = textField, onValueChange = { textField=it },
+                    value = textField, onValueChange = { textField = it },
                     colors = TextFieldDefaults.colors(
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
@@ -178,8 +178,8 @@ fun ChatScreen(
                             .height(textFieldHeight)
                     ) {
                         IconButton(onClick = {
-                            viewModel.sendMessage(otherUid, textField,context)
-                            textField=""
+                            viewModel.sendMessage(otherUid, textField, context)
+                            textField = ""
                         }) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.Send,
